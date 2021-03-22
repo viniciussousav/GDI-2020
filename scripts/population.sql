@@ -19,3 +19,9 @@ INSERT INTO
   Endereco (id_endereco, rua, numero, bairro, cidade, estado)
 VALUES
   (END_ID_SEQ.NEXTVAL, 'Av. Prof. Moraes Rego', 55, 'Várzea', 'Recife', 'Pernambuco', 50670-420);
+
+UPDATE Endereco
+SET numero = 388, complemento = 'Térreo'
+WHERE rua = 'Rua Cassilandia';
+
+DELETE FROM Endereco WHERE rua = 'Rua Cassilandia';
