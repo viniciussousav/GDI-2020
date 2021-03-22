@@ -9,6 +9,19 @@ CREATE TABLE Pessoa (
     CONSTRAINT pessoa_fk FOREIGN KEY id_endereco REFERENCES Endereco_pessoa(id_pessoa)
 )
 
+CREATE TABLE Endereco (
+    id_endereco VARCHAR2(14),
+    rua VARCHAR2(50),
+    numero NUMBER,
+    complemento VARCHAR2(50),
+    bairro VARCHAR2(20),
+    cidade VARCHAR2(20),
+    estado VARCHAR2(20),
+    cep NUMBER NOT NULL,
+
+    CONSTRAINT endereco_pk PRIMARY KEY id_endereco,
+)
+
 CREATE TABLE Endereco_pessoa (
     id_pessoa VARCHAR2(14),
     rua VARCHAR2(50),
@@ -22,6 +35,17 @@ CREATE TABLE Endereco_pessoa (
     CONSTRAINT endereco_pk PRIMARY KEY id_pessoa,
     CONSTRAINT endereco_fk FOREIGN KEY id_pessoa REFERENCES Pessoa(cpf)
 )
+
+ALTER TABLE Endereco_pessoa
+DROP (
+    rua,
+    numero,
+    complemento,
+    bairro,
+    cidade,
+    estado,
+    cep
+);
 
 CREATE TABLE Telefone_pessoa (
     id_pessoa VARCHAR2(14),
