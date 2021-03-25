@@ -1,92 +1,85 @@
+DROP TABLE Pessoa;
+DROP TABLE Codigo_postal;
+DROP TABLE Endereco_pessoa;
+DROP TABLE Telefone_pessoa;
+DROP TABLE Cliente;
+DROP TABLE Email_cliente;
+DROP TABLE Endereco_entrega;
+DROP TABLE Produto;
+DROP TABLE Pedido;
+DROP TABLE Funcionario;
+DROP TABLE Dependente;
+DROP TABLE Setor;
+DROP TABLE Operador;
+DROP TABLE Gerente;
+DROP TABLE Fornecedor;
+DROP TABLE Endereco_fornecedor;
+DROP TABLE Email_fornecedor;
+
+
 CREATE TABLE Pessoa (
     cpf VARCHAR2(14),
     nome VARCHAR(30) NOT NULL,
     sexo CHAR(1) CHECK (sexo IN ("M", "F")),
     data_nascimento DATE NOT NULL,
-    id_endereco VARCHAR2(14), 
 
     CONSTRAINT pessoa_pk PRIMARY KEY(cpf),
-    CONSTRAINT pessoa_fk FOREIGN KEY id_endereco REFERENCES Endereco_pessoa(id_pessoa)
-)
+);
 
-CREATE TABLE Endereco (
-    id_endereco VARCHAR2(14),
+CREATE TABLE Codigo_postal (
+    cep NUMBER,
     rua VARCHAR2(50),
-    numero NUMBER,
-    complemento VARCHAR2(50),
     bairro VARCHAR2(20),
     cidade VARCHAR2(20),
     estado VARCHAR2(20),
-    cep NUMBER NOT NULL,
 
-    CONSTRAINT endereco_pk PRIMARY KEY id_endereco,
-)
+    CONSTRAINT endereco_pk PRIMARY KEY cep,
+);
 
 CREATE TABLE Endereco_pessoa (
     id_pessoa VARCHAR2(14),
-    rua VARCHAR2(50),
+    cep NUMBER,
     numero NUMBER,
     complemento VARCHAR2(50),
-    bairro VARCHAR2(20),
-    cidade VARCHAR2(20),
-    estado VARCHAR2(20),
-    cep NUMBER NOT NULL,
 
     CONSTRAINT endereco_pk PRIMARY KEY id_pessoa,
-    CONSTRAINT endereco_fk FOREIGN KEY id_pessoa REFERENCES Pessoa(cpf)
-)
-
-ALTER TABLE Endereco_pessoa
-DROP (
-    rua,
-    numero,
-    complemento,
-    bairro,
-    cidade,
-    estado,
-    cep
+    CONSTRAINT endereco_fk FOREIGN KEY id_pessoa REFERENCES Pessoa(cpf),
+    CONSTRAINT endereco_cep_fk FOREIGN KEY cep REFERENCES Codigo_postal(cep)
 );
 
 CREATE TABLE Telefone_pessoa (
     id_pessoa VARCHAR2(14),
-    telefone_pessoa NUMBER,
+    telefone NUMBER,
 
-    CONSTRAINT telefone_pessoa_pk PRIMARY KEY (id_pessoa, telefone_pessoa),
+    CONSTRAINT telefone_pessoa_pk PRIMARY KEY (id_pessoa, telefone),
     CONSTRAINT telefone_pessoa_fk FOREIGN KEY id_pessoa REFERENCES Pessoa(cpf)
-)
+);
 
 CREATE TABLE Cliente (
-    id_cliente VARCHAR2(14),
-    id_email NUMBER, 
+    id VARCHAR2(14)
 
-    CONSTRAINT client_pk PRIMARY KEY id_cliente,
-    CONSTRAINT cliente_cpf_fk FOREIGN KEY id_cliente REFERENCES Pessoa(cpf),
-    CONSTRAINT id_email FOREIGN KEY id_email REFERENCES Email_cliente(id_email)
-)
+    CONSTRAINT cliente_pk PRIMARY KEY id,
+    CONSTRAINT cliente_fk FOREIGN KEY id REFERENCES Pessoa(cpf),
+);
 
-CREATE TABLE Email_cliente ( -- AINDA FALTA AJEITAR
-    id_email NUMBER,
+CREATE TABLE Email_cliente (
     id_cliente VARCHAR2(14),
     email VARCHAR2(50),
 
     CONSTRAINT email_cliente_pk PRIMARY KEY (id_cliente, email),
-    CONSTRAINT email_cliente_fk FOREIGN KEY id_cliente REFERENCES Cliente(id_cliente)
-)
+    CONSTRAINT email_cliente_fk FOREIGN KEY id_cliente REFERENCES Cliente(id)
+);
 
 CREATE TABLE Endereco_entrega (
     id_pessoa VARCHAR2(14),
-    rua VARCHAR2(50),
+    cep NUMBER,
     numero NUMBER,
     complemento VARCHAR2(50),
-    bairro VARCHAR2(20),
-    cidade VARCHAR2(20),
-    estado VARCHAR2(20),
-    cep NUMBER NOT NULL,
 
     CONSTRAINT endereco_pk PRIMARY KEY id_pessoa,
-    CONSTRAINT endereco_fk FOREIGN KEY id_pessoa REFERENCES Pessoa(cpf) 
-)
-
+    CONSTRAINT endereco_pessoa_fk FOREIGN KEY id_pessoa REFERENCES Pessoa(cpf),
+    CONSTRAINT endereco_cep_fk FOREIGN KEY cep REFERENCES Codigo_postal(cep)
+);
 
 CREATE TABLE Produto (
     id NUMBER,
@@ -94,33 +87,33 @@ CREATE TABLE Produto (
     preco_compra NUMBER,
     preço_venda NUMBER,
     estoque NUMBER,
-    fabricante VARCHAR2(50)
+    fabricante VARCHAR2(50),
 
     CONSTRAINT produto_pk PRIMARY KEY id 
-)
+);
 
 CREATE TABLE Pedido (
     id NUMBER, 
-    cliente_id VARCHAR2(14),
+    id_cliente VARCHAR2(14),
     cod_produto NUMBER,
     data_pedido DATE,
     valor_total NUMBER,
-    meio_pagamento VARCHAR(50) CHECK (meio_pagamento in ("Cartão de crédito", "Boleto", "Cartão de Débito")) 
+    meio_pagamento VARCHAR(50) CHECK (meio_pagamento in ("Cartão de crédito", "Boleto", "Cartão de Débito")),
 
-    CONSTRAINT pedido_pk PRIMARY KEY id,
-    CONSTRAINT pedido_cliente_fk FOREIGN KEY cliente_id REFERENCES Cliente(id_cliente),
+    CONSTRAINT pedido_pk PRIMARY KEY (id, cod_produto),
+    CONSTRAINT pedido_cliente_fk FOREIGN KEY id_cliente REFERENCES Cliente(id),
     CONSTRAINT pedido_produto_fk FOREIGN KEY cod_produto REFERENCES Produto(id)
-)
+);
 
 CREATE TABLE Funcionario (
-    id_funcionario VARCHAR2(14),
+    id VARCHAR2(14),
     salario NUMBER, 
     data_admissao DATE,
-    ctps VARCHAR2(14)
+    ctps VARCHAR2(14),
 
-    CONSTRAINT funcionario_pk PRIMARY KEY id_funcionario,
-    CONSTRAINT funcionario_cpf_fk FOREIGN KEY id_funcionario REFERENCES Pessoa(cpf)
-)
+    CONSTRAINT funcionario_pk PRIMARY KEY id,
+    CONSTRAINT funcionario_fk FOREIGN KEY id REFERENCES Pessoa(cpf)
+);
 
 CREATE TABLE Dependente (
     id NUMBER, 
@@ -131,65 +124,97 @@ CREATE TABLE Dependente (
     data_nascimento DATE,
 
     CONSTRAINT dependente_pk PRIMARY KEY (id, id_funcionario),
-    CONSTRAINT dependente_func_fk FOREIGN KEY id_funcionario REFERENCES Funcionario(id_funcionario)
-)
+    CONSTRAINT dependente_func_fk FOREIGN KEY id_funcionario REFERENCES Funcionario(id)
+);
 
 CREATE TABLE Setor (
-    setor VARCHAR2(20),
+    categoria VARCHAR2(20),
 
-    CONSTRAINT setor_pk PRIMARY KEY setor
-)
+    CONSTRAINT setor_pk PRIMARY KEY categoria
+);
 
 CREATE TABLE Operador (
-    operador_cpf VARCHAR2(14),
+    id VARCHAR2(14),
     categoria_setor VARCHAR2(20),
     turno VARCHAR2(14) CHECK (turno IN ("Dia", "Noite")) -- TALVEZ DEVESSEMOS TROCAR PARA ESCALA (Ex. 12/36)
 
-    CONSTRAINT operador_pk PRIMARY KEY operador_cpf,
-    CONSTRAINT operador_cpf_fk FOREIGN KEY operador_cpf REFERENCES Funcionario(id_funcionario),
+    CONSTRAINT operador_pk PRIMARY KEY id,
+    CONSTRAINT operador_cpf_fk FOREIGN KEY id REFERENCES Funcionario(id),
     CONSTRAINT operador_categoria_fk FOREIGN KEY categoria_setor REFERENCES Setor(categoria)
-)
+);
 
 CREATE TABLE Gerente (
-    gerente_cpf VARCHAR2(14),
+    id VARCHAR2(14),
     categoria_setor VARCHAR2(20),
     diploma VARCHAR2(20) NOT NULL,
 
-    CONSTRAINT gerente_pk PRIMARY KEY gerente_cpf,
-    CONSTRAINT gerente_cpf_fk FOREIGN KEY gerente_cpf REFERENCES Funcionario(id_funcionario),
+    CONSTRAINT gerente_pk PRIMARY KEY id,
+    CONSTRAINT gerente_cpf_fk FOREIGN KEY id REFERENCES Funcionario(id),
     CONSTRAINT gerente_categoria_fk FOREIGN KEY categoria_setor REFERENCES Setor(categoria)
-)
+);
+
+ALTER TABLE Setor ADD (
+    id_gerente VARCHAR2(14),
+
+    CONSTRAINT setor_fk FOREIGN KEY id_gerente REFERENCES Gerente(id)
+);
 
 CREATE TABLE Fornecedor (
-    id VARCHAR2(14),
+    cnpj VARCHAR2(14),
     razao_social VARCHAR(50),
-    cpnj VARCHAR2(14),
     inscricao_estadual VARCHAR2(14),
-    id_endereco VARCHAR2(14),
+    telefone NUMBER,
 
-    CONSTRAINT fornecedor_pk PRIMARY KEY id,
-    CONSTRAINT fornecedor_endereco_fk FOREIGN KEY id_endereco REFERENCES Endereco_fornecedor(id_fornecedor)
-)
+    CONSTRAINT fornecedor_pk PRIMARY KEY cnpj,
+);
 
 CREATE TABLE Endereco_fornecedor (
     id_fornecedor VARCHAR2(14),
-    rua VARCHAR2(50),
     numero NUMBER,
     complemento VARCHAR2(50),
-    bairro VARCHAR2(20),
-    cidade VARCHAR2(20),
-    estado VARCHAR2(20),
     cep NUMBER NOT NULL,
 
     CONSTRAINT endereco_fornecedor_pk PRIMARY KEY id_fornecedor,
-    CONSTRAINT endereco_fornecedor_fk FOREIGN KEY id_fornecedor REFERENCES Fornecedor(id) 
-)
+    CONSTRAINT endereco_fornecedor_cnpj_fk FOREIGN KEY id_fornecedor REFERENCES Fornecedor(cnpj),
+    CONSTRAINT endereco_fornecedor_cep_fk FOREIGN KEY cep REFERENCES Codigo_postal(cep)
+);
 
-CREATE TABLE Email_fornecedor ( -- AINDA FALTA AJEITAR
-    id_email NUMBER,
+CREATE TABLE Email_fornecedor (
     id_fornecedor VARCHAR2(14),
     email VARCHAR2(50),
 
     CONSTRAINT email_fornecedor_pk PRIMARY KEY (id_fornecedor, email),
-    CONSTRAINT email_fornecedor_fk FOREIGN KEY id_forncedor REFERENCES Fornecedor(id)
+    CONSTRAINT email_fornecedor_fk FOREIGN KEY id_forncedor REFERENCES Fornecedor(cnpj)
+);
+
+CREATE TABLE Solicita (
+    cod_produto NUMBER,
+    setor_categoria VARCHAR2(20),
+    cnpj_fornecedor VARCHAR2(14),
+    data_solicitacao DATE,
+
+    CONSTRAINT solicita_pk PRIMARY KEY (data_solicitacao, cod_produto, cnpj_fornecedor),
+    CONSTRAINT cod_produto_fk FOREIGN KEY setor_categoria REFERENCES Produto(id),
+    CONSTRAINT cnpj_fornecedor FOREIGN KEY cnpj_fornecedor REFERENCES Fornecedor(cnpj) 
+);
+
+CREATE TABLE Registra (
+    cpf_funcionario VARCHAR2(14), 
+    codigo_produto NUMBER, 
+    categoria_setor VARCHAR2(20),
+    data_registro DATE,
+
+    CONSTRAINT registra_pk PRIMARY KEY (data_registro, cpf_funcionario, codigo_produto)
+    CONSTRAINT registra_funcionario_fk  FOREIGN KEY cpf_funcionario REFERENCES Funcionario(id),
+    CONSTRAINT registra_produto_fk  FOREIGN KEY codigo_produto REFERENCES Produto(id),
+    CONSTRAINT registra_setor_fk  FOREIGN KEY categoria_setor REFERENCES Setor(categoria)
+);
+
+CREATE TABLE Cancela (
+    cpf_cliente VARCHAR2(14),
+    id_pedido NUMBER,
+
+    CONSTRAINT cancela_pk PRIMARY KEY (cpf_cliente, id_pedido),
+    CONSTRAINT id_pedido FOREIGN KEY id_pedido REFERENCES Pedido(id),
+    CONSTRAINT cpf_cliente FOREIGN KEY cpf_cliente REFERENCES Cliente(id)
 )
