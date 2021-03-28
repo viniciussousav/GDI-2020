@@ -1,26 +1,26 @@
-DECLARE TYPE Endereco IS RECORD (
- 	rua    VARCHAR2(50),
- 	numero NUMBER,
- 	bairro VARCHAR2(15),
- 	cidade VARCHAR2(15),
- 	estado VARCHAR2(15)
+DECLARE TYPE Codigo_postal IS RECORD (
+  cep    NUMBER,
+  rua    VARCHAR2(50),
+  bairro VARCHAR2(20),
+  cidade VARCHAR2(20),
+  estado VARCHAR2(20)
 );
 
-end1 Endereco;
+end1 Codigo_postal;
 
 BEGIN
-end1.rua    := 'avenida caxangá';
-end1.numero := 0;
-end1.bairro := 'iputinga';
-end1.cidade := 'recife';
+end1.cep    := 50690000;
+end1.rua    := 'Avenida Caxangá';
+end1.bairro := 'Iputinga';
+end1.cidade := 'Recife';
 end1.estado := 'PE';
 END;
 /
 
 DECLARE
-  cpf_pessoa VARCHAR2(14):= '111.222.333-44';
-  cpf_aux    VARCHAR2(14);
-  TYPE pessoa_cpf IS TABLE OF Pessoa.cpf%TYPE INDEX BY VARCHAR2(14);
+  cpf_pessoa VARCHAR2(11):= '11122233344';
+  cpf_aux    VARCHAR2(11);
+  TYPE pessoa_cpf IS TABLE OF Pessoa.cpf%TYPE INDEX BY VARCHAR2(11);
 BEGIN
   SELECT cpf INTO cpf_aux
   FROM Pessoa 
@@ -33,20 +33,19 @@ EXCEPTION
 END;
 /
 
-CREATE OR REPLACE PROCEDURE insert_funcionario (
-  f_id_funcionario  IN FUNCIONARIO.id_funcionario%TYPE,
-  f_salario         IN FUNCIONARIO.salario%TYPE,
-  f_ctps            IN FUNCIONARIO.ctps%TYPE
+-- USA UMA PESSOA JA CADASTRADA
+CREATE OR REPLACE PROCEDURE insert_cliente (
+  c_id  IN CLIENTE.id%TYPE
 ) IS
 BEGIN
 INSERT INTO
-  Funcionario (id_funcionario, salario, ctps)
+  Cliente (id)
 VALUES
-  (f_id_funcionario, f_salario, f_ctps);
+  (c_id);
 COMMIT;
-END insert_funcionario;
+END insert_cliente;
 /
 
-EXECUTE insert_funcionario (1, 1000, 12345678);
+EXECUTE insert_cliente (12345678910);
 
-SELECT * FROM Funcionario WHERE id_funcionario = 1;
+SELECT * FROM Cliente WHERE id = 12345678910;
