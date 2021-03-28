@@ -14,7 +14,6 @@ DROP TABLE Operador;
 DROP TABLE Gerente;
 DROP TABLE Fornecedor;
 DROP TABLE Endereco_fornecedor;
-DROP TABLE Email_fornecedor;
 DROP TABLE Solicita;
 DROP TABLE Registra;
 
@@ -197,7 +196,8 @@ CREATE TABLE Solicita (
 
     CONSTRAINT solicita_pk PRIMARY KEY (data_solicitacao, cod_produto, cnpj_fornecedor),
     CONSTRAINT cod_produto_fk FOREIGN KEY (cod_produto) REFERENCES Produto(id),
-    CONSTRAINT cnpj_fornecedor FOREIGN KEY (cnpj_fornecedor) REFERENCES Fornecedor(cnpj) 
+    CONSTRAINT setor_categoria_fk FOREIGN KEY (setor_categoria) REFERENCES Setor(categoria),
+    CONSTRAINT cnpj_fornecedor_fk FOREIGN KEY (cnpj_fornecedor) REFERENCES Fornecedor(cnpj) 
 );
 
 CREATE TABLE Registra (
