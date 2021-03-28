@@ -20,7 +20,7 @@ DROP TABLE Registra;
 
 
 CREATE TABLE Pessoa (
-    cpf VARCHAR2(14),
+    cpf VARCHAR2(11),
     nome VARCHAR(30) NOT NULL,
     sexo CHAR(1) CHECK (sexo IN ('M', 'F')),
     data_nascimento DATE NOT NULL,
@@ -39,7 +39,7 @@ CREATE TABLE Codigo_postal (
 );
 
 CREATE TABLE Endereco_pessoa (
-    id_pessoa VARCHAR2(14),
+    id_pessoa VARCHAR2(11),
     cep NUMBER,
     numero NUMBER,
     complemento VARCHAR2(50),
@@ -50,7 +50,7 @@ CREATE TABLE Endereco_pessoa (
 );
 
 CREATE TABLE Telefone_pessoa (
-    id_pessoa VARCHAR2(14),
+    id_pessoa VARCHAR2(11),
     telefone NUMBER,
 
     CONSTRAINT telefone_pessoa_pk PRIMARY KEY (id_pessoa, telefone),
@@ -58,14 +58,14 @@ CREATE TABLE Telefone_pessoa (
 );
 
 CREATE TABLE Cliente (
-    id VARCHAR2(14),
+    id VARCHAR2(11),
 
     CONSTRAINT cliente_pk PRIMARY KEY (id),
     CONSTRAINT cliente_fk FOREIGN KEY (id) REFERENCES Pessoa(cpf)
 );
 
 CREATE TABLE Email_cliente (
-    id_cliente VARCHAR2(14),
+    id_cliente VARCHAR2(11),
     email VARCHAR2(50),
 
     CONSTRAINT email_cliente_pk PRIMARY KEY (id_cliente, email),
@@ -73,7 +73,7 @@ CREATE TABLE Email_cliente (
 );
 
 CREATE TABLE Endereco_entrega (
-    id_pessoa VARCHAR2(14),
+    id_pessoa VARCHAR2(11),
     cep NUMBER,
     numero NUMBER,
     complemento VARCHAR2(50),
@@ -96,7 +96,7 @@ CREATE TABLE Produto (
 
 CREATE TABLE Pedido (
     id NUMBER, 
-    id_cliente VARCHAR2(14),
+    id_cliente VARCHAR2(11),
     cod_produto NUMBER,
     data_pedido DATE,
     valor_total NUMBER,
@@ -108,10 +108,10 @@ CREATE TABLE Pedido (
 );
 
 CREATE TABLE Funcionario (
-    id VARCHAR2(14),
+    id VARCHAR2(11),
     salario NUMBER, 
     data_admissao DATE,
-    ctps VARCHAR2(14),
+    ctps VARCHAR2(8),
 
     CONSTRAINT funcionario_pk PRIMARY KEY (id),
     CONSTRAINT funcionario_fk FOREIGN KEY (id) REFERENCES Pessoa(cpf)
@@ -119,8 +119,8 @@ CREATE TABLE Funcionario (
 
 CREATE TABLE Dependente (
     id NUMBER, 
-    id_funcionario VARCHAR2(14),
-    cpf VARCHAR2(14),
+    id_funcionario VARCHAR2(11),
+    cpf VARCHAR2(8),
     nome VARCHAR2(50),
     sexo CHAR(1) CHECK (sexo IN ('M', 'F')),
     data_nascimento DATE,
@@ -136,7 +136,7 @@ CREATE TABLE Setor (
 );
 
 CREATE TABLE Operador (
-    id VARCHAR2(14),
+    id VARCHAR2(11),
     categoria_setor VARCHAR2(20),
     turno VARCHAR2(14) CHECK (turno IN ('Dia', 'Noite')), 
 
@@ -146,7 +146,7 @@ CREATE TABLE Operador (
 );
 
 CREATE TABLE Gerente (
-    id VARCHAR2(14),
+    id VARCHAR2(11),
     categoria_setor VARCHAR2(20),
     diploma VARCHAR2(20) NOT NULL,
 
@@ -156,7 +156,7 @@ CREATE TABLE Gerente (
 );
 
 ALTER TABLE Setor ADD (
-    id_gerente VARCHAR2(14),
+    id_gerente VARCHAR2(11),
 
     CONSTRAINT setor_fk FOREIGN KEY (id_gerente) REFERENCES Gerente(id)
 );
@@ -164,7 +164,7 @@ ALTER TABLE Setor ADD (
 CREATE TABLE Fornecedor (
     cnpj VARCHAR2(14),
     razao_social VARCHAR(50),
-    inscricao_estadual VARCHAR2(14),
+    inscricao_estadual VARCHAR2(12),
     telefone NUMBER,
 
     CONSTRAINT fornecedor_pk PRIMARY KEY (cnpj)
@@ -201,7 +201,7 @@ CREATE TABLE Solicita (
 );
 
 CREATE TABLE Registra (
-    cpf_funcionario VARCHAR2(14), 
+    cpf_funcionario VARCHAR2(11), 
     codigo_produto NUMBER, 
     categoria_setor VARCHAR2(20),
     data_registro DATE,
