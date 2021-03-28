@@ -39,6 +39,8 @@ INSERT INTO
 VALUES
   (48721568497, 'Ilton Chagas', 'M', DATE '1968-07-02');
 
+INSERT INTO
+  Pessoa (cpf, nome, sexo, data_nascimento)
 VALUES
   (74865132587, 'Jair Silva', 'M', DATE '1962-01-24');
 
@@ -50,12 +52,12 @@ VALUES
 INSERT INTO
   Pessoa (cpf, nome, sexo, data_nascimento)
 VALUES
-  (787651324864, 'Silvio Santos', 'M', DATE '1991-05-25');
+  (78765124864, 'Silvio Santos', 'M', DATE '1991-05-25');
 
 INSERT INTO
   Pessoa (cpf, nome, sexo, data_nascimento)
 VALUES
-  (884566973254, 'Patricia Duarte', 'F', DATE '1978-07-12');
+  (88456973254, 'Patricia Duarte', 'F', DATE '1978-07-12');
 
 
 -- POVOANDO A TABELA CODIGO_POSTAL
@@ -194,12 +196,12 @@ VALUES
 INSERT INTO
   Endereco_pessoa (id_pessoa, cep, numero, complemento)
 VALUES
-  (787651324864, 12547856, 95, 'APT 89');
+  (78765124864, 12547856, 95, 'APT 89');
 
 INSERT INTO
   Endereco_pessoa (id_pessoa, cep, numero, complemento)
 VALUES
-  (884566973254, 31256987, 32, 'APT 10');
+  (88456973254, 31256987, 32, 'APT 10');
 
 
 -- POVOANDO A TABELA TELEFONE_PESSOA
@@ -242,11 +244,11 @@ VALUES
 INSERT INTO
   Telefone_pessoa (id_pessoa, telefone)
 VALUES
-  (787651324864, 0158765625781);
+  (78765124864, 0158765625781);
 INSERT INTO
   Telefone_pessoa (id_pessoa, telefone)
 VALUES
-  (884566973254, 015991456781);
+  (88456973254, 015991456781);
 INSERT INTO
   Telefone_pessoa (id_pessoa, telefone)
 VALUES
@@ -323,298 +325,298 @@ DELETE FROM Endereco_entrega WHERE complemento = 'APT 105';
 INSERT INTO
   Produto (id, nome, preco_compra, preço_venda, estoque, fabricante)
 VALUES
-  (15494317833, 'Notebook CCIn', 3040, 4099, 214, "Casa Central de Informatica");
+  (15494317833, 'Notebook CCIn', 3040, 4099, 214, 'Casa Central de Informatica');
 
 INSERT INTO
   Produto (id, nome, preco_compra, preço_venda, estoque, fabricante)
 VALUES
-  (31487893249, 'Pen-drive', 52.20, 73.99, 68, "CC Mídias");
+  (31487893249, 'Pen-drive', 52.20, 73.99, 68, 'CC Mídias');
 
 INSERT INTO
   Produto (id, nome, preco_compra, preço_venda, estoque, fabricante)
 VALUES
-  (61876824893, 'Ventilador', 63, 85.99, 523, "Só Venta LTDA");
+  (61876824893, 'Ventilador', 63, 85.99, 523, 'Só Venta LTDA');
 
 INSERT INTO
   Produto (id, nome, preco_compra, preço_venda, estoque, fabricante)
 VALUES
-  (81561349816, 'Relogio', 80.90, 105.99, 121, "Hora Certa Distribuidora");
+  (81561349816, 'Relogio', 80.90, 105.99, 121, 'Hora Certa Distribuidora');
 
 
 -- POVOANDO A TABELA PEDIDO
 INSERT INTO
   Pedido (id, id_cliente, cod_produto, data_pedido, valor_total, meio_pagamento)
 VALUES
-  (98715469873, 86505080066, 15494317833, DATE '2020-03-03', 4099, "Cartão de Crédito");
+  (98715469873, 86505080066, 15494317833, DATE '2020-03-03', 4099, 'Cartão de crédito');
 
 INSERT INTO
   Pedido (id, id_cliente, cod_produto, data_pedido, valor_total, meio_pagamento)
 VALUES
-  (78913216794, 28788212033, 31487893249, DATE '2019-04-05', 63.99, "Boleto");
+  (78913216794, 28788212033, 31487893249, DATE '2019-04-05', 63.99, 'Boleto');
 
 INSERT INTO
   Pedido (id, id_cliente, cod_produto, data_pedido, valor_total, meio_pagamento)
 VALUES
-  (24164167983, 30378752081, 61876824893, 85.99, DATE '2018-08-06', "Boleto");
+  (24164167983, 30378752081, 61876824893, DATE '2018-08-06', 85.99, 'Boleto');
 
 INSERT INTO
   Pedido (id, id_cliente, cod_produto, data_pedido, valor_total, meio_pagamento)
 VALUES
-  (12496873125, 90459533070, 81561349816, 105.99, DATE '2018-08-06', "Cartão de Débito");
+  (12496873125, 90459533070, 81561349816, DATE '2018-08-06', 105.99, 'Cartão de Débito');
 
 
 -- POVOANDO A TABELA FUNCIONARIO
 INSERT INTO
   Funcionario (id, salario, data_admissao,ctps)
 VALUES
-  (12345678910, 3200, DATE '2010-03-03', 12354865248);
+  (12345678910, 3200, DATE '2010-03-03', 12354868);
 
 INSERT INTO
   Funcionario (id, salario, data_admissao,ctps)
 VALUES
-  (32145897526, 3200, DATE '2015-04-05', 89456871325);
+  (32145897526, 3200, DATE '2015-04-05', 89456325);
 
 INSERT INTO
   Funcionario (id, salario, data_admissao,ctps)
 VALUES
-  (98742658412, 3200, DATE '2012-08-04', 25489654795);
+  (98742658412, 3200, DATE '2012-08-04', 25654795);
 
 INSERT INTO
   Funcionario (id, salario, data_admissao,ctps)
 VALUES
-  (48721568497, 3200, DATE '2018-07-01', 14821468792);
+  (48721568497, 3200, DATE '2018-07-01', 14868792);
 
 INSERT INTO
   Funcionario (id, salario, data_admissao,ctps)
 VALUES
-  (74865132587, 4300, DATE '2010-03-03', 87956214568);
+  (74865132587, 4300, DATE '2010-03-03', 87954568);
 
 INSERT INTO
   Funcionario (id, salario, data_admissao,ctps)
 VALUES
-  (98745632158, 4300, DATE '2011-04-05', 16874321598);
+  (98745632158, 4300, DATE '2011-04-05', 16874398);
 
 INSERT INTO
   Funcionario (id, salario, data_admissao,ctps)
 VALUES
-  (787651324864, 4300, DATE '2008-08-04', 33321547896);
+  (78765124864, 4300, DATE '2008-08-04', 33321596);
 
 INSERT INTO
   Funcionario (id, salario, data_admissao,ctps)
 VALUES
-  (884566973254, 4300, DATE '2006-07-01', 16648974563);
+  (88456973254, 4300, DATE '2006-07-01', 16674563);
 
 
 -- POVOANDO A TABELA DEPENDENTE
 INSERT INTO
   Dependente (id, id_funcionario, cpf, nome, sexo, data_nascimento)
 VALUES
-  (110, 12345678910, 32417957864, "Enzo Biden", "M", DATE '2018-08-06');
+  (110, 12345678910, 32417864, 'Enzo Biden', 'M', DATE '2018-08-06');
 
 INSERT INTO
   Dependente (id, id_funcionario, cpf, nome, sexo, data_nascimento)
 VALUES
-  (111, 32145897526, 78546985412, "Valentina Macedo", "F", DATE '2018-07-03');
+  (111, 32145897526, 78585412, 'Valentina Macedo', 'F', DATE '2018-07-03');
 
 INSERT INTO
   Dependente (id, id_funcionario, cpf, nome, sexo, data_nascimento)
 VALUES
-  (112, 98742658412, 85648791325, "Elizabete Augusto", "F", DATE '2016-01-02');
+  (112, 98742658412, 85648725, 'Elizabete Augusto', 'F', DATE '2016-01-02');
 
 INSERT INTO
   Dependente (id, id_funcionario, cpf, nome, sexo, data_nascimento)
 VALUES
-  (113, 48721568497, 98462178964, "Miguel Chagas", "M", DATE '2017-07-01');
+  (113, 48721568497, 98462964, 'Miguel Chagas', 'M', DATE '2020-03-11');
 
 INSERT INTO
   Dependente (id, id_funcionario, cpf, nome, sexo, data_nascimento)
 VALUES
-  (113, 74865132587, 34562178964, "José Silva", "M", DATE '2017-07-01');
+  (114, 74865132587, 34578964, 'José Silva', 'M', DATE '2012-12-12');
 
 INSERT INTO
   Dependente (id, id_funcionario, cpf, nome, sexo, data_nascimento)
 VALUES
-  (113, 98745632158, 94562178964, "Flavio Bolsonaro", "M", DATE '2017-07-01');
+  (115, 98745632158, 94562964, 'Flavio Bolsonaro', 'M', DATE '2010-10-10');
 
 INSERT INTO
   Dependente (id, id_funcionario, cpf, nome, sexo, data_nascimento)
 VALUES
-  (113, 787651324864, 76542178964, "Cristina Santos", "F", DATE '2017-07-01');
+  (116, 78765124864, 76548964, 'Cristina Santos', 'F', DATE '2011-11-11');
 
 INSERT INTO
   Dependente (id, id_funcionario, cpf, nome, sexo, data_nascimento)
 VALUES
-  (113, 884566973254, 34562178964, "Raquel Chagas", "F", DATE '2017-07-01');
+  (117, 88456973254, 34578964, 'Raquel Chagas', 'F', DATE '2021-01-01');
 
 
 -- POVOANDO A TABELA SETOR
 INSERT INTO
   Setor (categoria)
 VALUES
-  ("Eletroportateis");
+  ('Eletroportateis');
 INSERT INTO
   Setor (categoria)
 VALUES
-  ("Informatica");
+  ('Informatica');
 INSERT INTO
   Setor (categoria)
 VALUES
-  ("Acessórios");
+  ('Acessórios');
 INSERT INTO
   Setor (categoria)
 VALUES
-  ("Armazenamentos");
+  ('Armazenamentos');
 
 
 -- POVOANDO A TABELA OPERADOR
 INSERT INTO
   Operador (id, categoria_setor, turno)
 VALUES
-  (12345678910, "Eletroportateis", "Dia");
+  (12345678910, 'Eletroportateis', 'Dia');
 
 INSERT INTO
   Operador (id, categoria_setor, turno)
 VALUES
-  (32145897526, "Informatica", "Dia");
+  (32145897526, 'Informatica', 'Dia');
 
 INSERT INTO
   Operador (id, categoria_setor, turno)
 VALUES
-  (98742658412, "Acessórios", "Noite");
+  (98742658412, 'Acessórios', 'Noite');
 
 INSERT INTO
   Operador (id, categoria_setor, turno)
 VALUES
-  (48721568497, "Armazenamentos", "Noite");
+  (48721568497, 'Armazenamentos', 'Noite');
 
 
 -- POVOANDO A TABELA GERENTE
 INSERT INTO
   Gerente (id, categoria_setor, diploma)
 VALUES
-  (74865132587, "Eletroportateis", "Contabilidade");
-
-INSERT INTO
-  Gerente (id, categoria_setor, turno)
-VALUES
-  (98745632158, "Informatica", "Administração");
+  (74865132587, 'Eletroportateis', 'Contabilidade');
 
 INSERT INTO
   Gerente (id, categoria_setor, diploma)
 VALUES
-  (787651324864, "Eletroportateis", "Contabilidade");
+  (98745632158, 'Informatica', 'Administração');
 
 INSERT INTO
-  Gerente (id, categoria_setor, turno)
+  Gerente (id, categoria_setor, diploma)
 VALUES
-  (884566973254, "Informatica", "Administração");
+  (78765124864, 'Acessórios', 'Designe');
+
+INSERT INTO
+  Gerente (id, categoria_setor, diploma)
+VALUES
+  (88456973254, 'Armazenamentos', 'Marketing');
 
 
 -- POVOANDO A TABELA FORNECEDOR
 INSERT INTO
   Fornecedor (cnpj, razao_social, inscricao_estadual, telefone)
 VALUES
-  (74865865132587, "Casa Central de Informatica", "7156489721-2", 986158615);
+  (74865865132587, 'Casa Central de Informatica', '7156489721-2', 986158615);
 
 INSERT INTO
   Fornecedor (cnpj, razao_social, inscricao_estadual, telefone)
 VALUES
-  (98745478632158, "CC Mídias", "8157899721-1", 998798725);
+  (98745478632158, 'CC Mídias', '8157899721-1', 998798725);
 
 INSERT INTO
   Fornecedor (cnpj, razao_social, inscricao_estadual, telefone)
 VALUES
-  (74865985132587, "Só Venta LTDA", "6547899778-2", 948653254);
+  (74865985132587, 'Só Venta LTDA', '6547899778-2', 948653254);
 
 INSERT INTO
   Fornecedor (cnpj, razao_social, inscricao_estadual, telefone)
 VALUES
-  (98745321632158, "Hora Certa Distribuidora", "7847899715-0", 945682544);
+  (98745321632158, 'Hora Certa Distribuidora', '7847899715-0', 945682544);
 
 
 -- POVOANDO A TABELA ENDEREÇO FORNECEDOR
 INSERT INTO
   Endereco_fornecedor (id_fornecedor, numero, complemento, cep)
 VALUES
-  (74865865132587, 1205, "Rua Santos Drumont, Boa Viagem", 54872069);
+  (74865865132587, 1205, 'Rua Santos Drumont, Boa Viagem', 54872069);
 
 INSERT INTO
   Endereco_fornecedor (id_fornecedor, numero, complemento, cep)
 VALUES
-  (98745478632158, 8520, "Avenida Nikola Tesla, Vazea", 85475021);
+  (98745478632158, 8520, 'Avenida Nikola Tesla, Vazea', 85475021);
 
 INSERT INTO
   Endereco_fornecedor (id_fornecedor, numero, complemento, cep)
 VALUES
-  (74865985132587, 102, "Rua Michele Obama, Macaxeira", 78452069);
+  (74865985132587, 102, 'Rua Michele Obama, Macaxeira', 78452069);
 
 INSERT INTO
   Endereco_fornecedor (id_fornecedor, numero, complemento, cep)
 VALUES
-  (98745321632158, 654, "Avenida São João, Caxangá", 57486025);
+  (98745321632158, 654, 'Avenida São João, Caxangá', 57486025);
 
 
 -- POVOANDO A TABELA EMAIL FORNECEDOR
 INSERT INTO
   Email_fornecedor (id_fornecedor, email)
 VALUES
-  (74865865132587, "ccinformatica@gmail.com");
+  (74865865132587, 'ccinformatica@gmail.com');
 
 INSERT INTO
   Email_fornecedor (id_fornecedor, email)
 VALUES
-  (98745478632158, "ccmidias@outlook.com");
+  (98745478632158, 'ccmidias@outlook.com');
 
 INSERT INTO
   Email_fornecedor (id_fornecedor, email)
 VALUES
-  (74865985132587, "svltda@hotmail.com");
+  (74865985132587, 'svltda@hotmail.com');
 
 INSERT INTO
   Email_fornecedor (id_fornecedor, email)
 VALUES
-  (98745321632158, "hcdistro@yahoo.com.br");
+  (98745321632158, 'hcdistro@yahoo.com.br');
 
 
 -- POVOANDO A TABELA SOLICITA
 INSERT INTO
   Solicita (cod_produto, setor_categoria, cnpj_fornecedor, data_solicitacao)
 VALUES
-  (15494317833, "Eletroportateis", 74865865132587, DATE '2020-08-06');
+  (15494317833, 'Eletroportateis', 74865865132587, DATE '2020-08-06');
 
 INSERT INTO
   Solicita (cod_produto, setor_categoria, cnpj_fornecedor, data_solicitacao)
 VALUES
-  (31487893249, "Informatica", 98745478632158, DATE '2020-09-08');
+  (31487893249, 'Informatica', 98745478632158, DATE '2020-09-08');
 
 INSERT INTO
   Solicita (cod_produto, setor_categoria, cnpj_fornecedor, data_solicitacao)
 VALUES
-  (61876824893, "Acessórios", 74865985132587, DATE '2021-01-02');
+  (61876824893, 'Acessórios', 74865985132587, DATE '2021-01-02');
 
 INSERT INTO
   Solicita (cod_produto, setor_categoria, cnpj_fornecedor, data_solicitacao)
 VALUES
-  (81561349816, "Armazenamentos", 98745321632158, DATE '2021-02-10');
+  (81561349816, 'Armazenamentos', 98745321632158, DATE '2021-02-10');
 
 
 -- POVOANDO A TABELA REGISTRA
 INSERT INTO
   Registra (cpf_funcionario, codigo_produto, categoria_setor, data_registro)
 VALUES
-  (12345678910, 15494317833, "Eletroportateis", DATE '2021-02-06');
+  (12345678910, 15494317833, 'Eletroportateis', DATE '2021-02-06');
 
 INSERT INTO
   Registra (cpf_funcionario, codigo_produto, categoria_setor, data_registro)
 VALUES
-  (32145897526, 31487893249, "Informatica", DATE '2021-01-08');
+  (32145897526, 31487893249, 'Informatica', DATE '2021-01-08');
 
 INSERT INTO
   Registra (cpf_funcionario, codigo_produto, categoria_setor, data_registro)
 VALUES
-  (98742658412, 61876824893, "Acessórios", DATE '2021-01-02');
+  (98742658412, 61876824893, 'Acessórios', DATE '2021-01-02');
 
 INSERT INTO
   Registra (cpf_funcionario, codigo_produto, categoria_setor, data_registro)
 VALUES
-  (48721568497, 81561349816, "Armazenamentos", DATE '2021-03-10');
+  (48721568497, 81561349816, 'Armazenamentos', DATE '2021-03-10');
