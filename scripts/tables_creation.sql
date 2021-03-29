@@ -87,7 +87,7 @@ CREATE TABLE Produto (
     id NUMBER,
     nome VARCHAR2(50),
     preco_compra NUMBER,
-    preço_venda NUMBER,
+    preco_venda NUMBER,
     estoque NUMBER,
     fabricante VARCHAR2(50),
 
