@@ -1,59 +1,56 @@
-SELECT * FROM Endereco;
+SELECT * FROM Codigo_postal;
 
-SELECT * FROM Endereco
-WHERE complemento = 'Apartamento';
+SELECT * FROM Endereco_pessoa
+WHERE complemento = 'APT 404';
 
-SELECT * FROM Endereco
-WHERE cidade IN ('Caruaru', 'Jaboatão');
+SELECT * FROM Codigo_postal
+WHERE cidade IN ('Cariacica', 'Iguatu');
 
-SELECT * FROM Endereco
-WHERE ESTADO LIKE 'P%' OR ESTADO LIKE 'p%';
+SELECT * FROM Codigo_postal
+WHERE estado LIKE 'S%' OR estado LIKE 's%';
 
-SELECT * FROM Endereco
+SELECT * FROM Endereco_pessoa
 WHERE complemento IS NULL;
 
-SELECT * FROM Endereco
+SELECT * FROM Endereco_pessoa
 WHERE numero IS NOT NULL;
 
-SELECT * FROM (SELECT * FROM Endereco
-WHERE cidade IN ('Várzea', 'Recife'));
+SELECT * FROM (SELECT * FROM Codigo_postal
+WHERE cidade IN ('Amparo', 'Eunápolis'));
 
-SELECT * FROM Endereco WHERE cidade = ANY
-(SELECT cidade FROM Endereco WHERE numero IS NOT NULL)
+SELECT cep FROM Codigo_postal WHERE cidade = ANY
+(SELECT cidade FROM Endereco_pessoa WHERE numero IS NOT NULL);
 
-SELECT rua,cidade FROM Endereco
-WHERE numero BETWEEN 50 AND 100;
+SELECT complemento FROM Endereco_pessoa
+WHERE numero BETWEEN 1 AND 100;
                  
-SELECT * FROM (SELECT * FROM Endereco
-WHERE cidade IN ('Várzea', 'Recife'));
+SELECT * FROM Codigo_postal WHERE cidade != ALL
+(SELECT DISTINCT id_pessoa FROM Endereco_pessoa WHERE complemento IS NOT NULL);
+
+CREATE INDEX idx1 ON Fornecedor(razao_social);
+
+SELECT * FROM Codigo_postal WHERE cidade IN
+(SELECT cidade FROM Endereco_pessoa WHERE estado = 'CE');
+
+SELECT * FROM Pessoa P INNER JOIN Cliente C ON P.cpf = C.id;
                  
-SELECT * FROM Endereco
-WHERE cidade = ANY
-(SELECT cidade FROM Endereco WHERE numero IS NOT NULL);
-                 
-SELECT * FROM Endereco
-WHERE cidade != ALL
-(SELECT DISTINCT cidade FROM Endereco WHERE numero IS NOT NULL);
-                 
-SELECT * FROM Pessoa P INNER JOIN Endereco E ON P.id_endereco = E.id_endereco;
-                 
-SELECT Pessoa.nome, Endereco.id_endereco
-FROM Pessoa LEFT JOIN Endereco ON Endereco.id_endereco = Pessoa.id_endereco
+SELECT Pessoa.cpf, Cliente.id
+FROM Pessoa LEFT JOIN Cliente ON Pessoa.cpf = Cliente.id
 ORDER BY Pessoa.nome ASC;
                  
-SELECT MAX(preco_venda) FROM produto;
+SELECT MAX(preco_venda) FROM Produto;
 
-SELECT MIN(preco_venda) FROM produto;
+SELECT MIN(preco_venda) FROM Produto;
                  
 SELECT fabricante, MAX (preco_venda) AS preco FROM Produto GROUP BY fabricante ORDER BY fabricante ASC;
 
 SELECT fabricante, MAX (preco_venda) AS preco FROM Produto GROUP BY fabricante HAVING MAX (preco_venda) > 500 ORDER BY fabricante ASC;
 
-SELECT AVG(preco_venda) FROM produto;
+SELECT AVG(preco_venda) FROM Produto;
 
-SELECT COUNT(preco_venda) FROM produto P WHERE P.preco_de_venda > 200;
+SELECT COUNT(preco_venda) FROM Produto P WHERE P.preco_venda > 200;
                  
-SELECT MIN(preco_venda) FROM (SELECT preco_venda FROM produto P WHERE P.preco_venda > 200);
+SELECT MIN(preco_venda) FROM (SELECT preco_venda FROM Produto P WHERE P.preco_venda > 200);
                  
 SELECT * FROM Produto WHERE preco_venda = ANY
 (SELECT MAX (preco_venda) AS preco FROM Produto UNION SELECT MIN (preco_venda) AS preco FROM Produto);
@@ -62,7 +59,7 @@ CREATE VIEW Produto_Fornecedor AS
 SELECT  Produto.id, Produto.nome, Produto.preco_compra, 
         Produto.preco_venda, (Produto.preco_venda - Produto.preco_compra) AS Lucro,
         Fornecedor.razao_social AS Fornecedor
-FROM Produto INNER JOIN Fornecedor ON fabricante = nome_fantasia
+FROM Produto INNER JOIN Fornecedor ON fabricante = Fornecedor.razao_social
 ORDER BY Produto.id ASC;
                  
 CREATE USER user_admin IDENTIFIED BY 12345678;
