@@ -1,3 +1,9 @@
+CREATE SEQUENCE ANO_CORRENTE_SEQ
+  MINVALUE 2010
+  MAXVALUE 2021
+  START WITH 2010
+  INCREMENT BY 1;
+
 DECLARE TYPE Codigo_postal IS RECORD (
   cep    NUMBER,
   rua    VARCHAR2(50),
@@ -49,29 +55,38 @@ COMMIT;
 END insert_funcionario;
 /
 
-EXECUTE insert_funcionario (50819283053, 10000, DATE '2020-01-01', 12345678);
+EXECUTE insert_funcionario (50819283053, 10000, DATE '2010-01-01', 12345678);
 SELECT * FROM Funcionario WHERE id = 50819283053;
 
-CREATE OR REPLACE FUNCTION get_pedidos_ano (
-  ano NUMBER
-)
-RETURN NUMBER
-IS
-  total_pedidos NUMBER := 0;
-BEGIN
-  SELECT COUNT(id)
-  INTO total_pedidos
-  FROM Pedido
-  WHERE EXTRACT(YEAR FROM data_pedido) = ano;
+CREATE OR REPLACE PACKAGE contabilidade AS
+  FUNCTION get_pedidos_ano(ano NUMBER)
+    RETURN NUMBER;
+END contabilidade;
+/
 
-  RETURN total_pedidos;
-END;
+CREATE OR REPLACE PACKAGE BODY contabilidade AS
+  -- LISTA PEDIDOS FEITO NUM DETERMINADO ANO
+  FUNCTION get_pedidos_ano (
+    ano NUMBER
+  )
+  RETURN NUMBER
+  IS
+    total_pedidos NUMBER := 0;
+  BEGIN
+    SELECT COUNT(id)
+    INTO total_pedidos
+    FROM Pedido
+    WHERE EXTRACT(YEAR FROM data_pedido) = ano;
+
+    RETURN total_pedidos;
+  END;
+END contabilidade;
 /
 
 DECLARE
   pedidos NUMBER := 0;
 BEGIN
-  pedidos := get_pedidos_ano(2020);
+  pedidos := contabilidade.get_pedidos_ano(ANO_CORRENTE_SEQ.NEXTVAL);
   IF pedidos >= 1000 THEN
     DBMS_OUTPUT.PUT_LINE('Meta de vendas atingida! Número total de pedidos: ' || pedidos);
   ELSIF pedidos > 0 AND pedidos < 1000 THEN
@@ -91,7 +106,9 @@ BEGIN
   LOOP
     FETCH prod_cur INTO var_prod;
     EXIT WHEN prod_cur%NOTFOUND;
-    DBMS_OUTPUT.PUT_LINE('Produto: ' || var_prod.nome || ' | Estoque: ' || var_prod.estoque);
+    DBMS_OUTPUT.PUT_LINE('Produto: ' || var_prod.nome);
+    DBMS_OUTPUT.PUT_LINE('Estoque: ' || var_prod.estoque);
+    DBMS_OUTPUT.PUT_LINE(char(10));
   END LOOP;
   CLOSE prod_cur;
 END;
@@ -99,23 +116,69 @@ END;
 
 CALL lista_produtos;
 
--- AJEITAR ISSO AQUI
+-- CALCULA O VALOR COM DESCONTO DE PRODUTOS
 DECLARE
-  valor NUMBER;
   desconto NUMBER;
+  CURSOR prodcur IS SELECT nome, preco_venda FROM Produto;
+  varprod prodcur%ROWTYPE;
 BEGIN
-  valor := 3200;
-  CASE
-  WHEN valor >= 5000 THEN
-    desconto := 0.15;
-  WHEN valor >= 3000 AND valor < 5000 THEN
-    desconto := 0.10;
-  WHEN valor >= 1500 AND valor < 3000 THEN
-    desconto := 0.05;
-  ELSE
-    desconto := 0.00;
-  END CASE;
+  OPEN prodcur;
+  LOOP
+    FETCH prodcur INTO varprod;
+    EXIT WHEN prodcur%NOTFOUND;
+    CASE
+    WHEN varprod.preco_venda >= 3000 THEN
+      desconto := 0.15;
+    WHEN varprod.preco_venda >= 2000 AND varprod.preco_venda < 3000 THEN
+      desconto := 0.10;
+    WHEN varprod.preco_venda >= 1000 AND varprod.preco_venda < 2000 THEN
+      desconto := 0.05;
+    ELSE
+      desconto := 0.00;
+    END CASE;
 
-  DBMS_OUTPUT.PUT_LINE('Desconto de ' || desconto * 100 || '%');
+    DBMS_OUTPUT.PUT_LINE('Produto: ' || varprod.nome);
+    DBMS_OUTPUT.PUT_LINE('Valor com desconto: ' || varprod.preco_venda * (1 - desconto));
+  END LOOP;
+  CLOSE prodcur;
+END;
+/
+
+-- LOOP PARA CALCULO DA FOLHA SALARIAL
+DECLARE
+  folha_salarial NUMBER;
+BEGIN
+  folha_salarial := 0;
+  FOR funcionarios IN (SELECT salario FROM Funcionario)
+  LOOP
+    folha_salarial := folha_salarial + funcionarios.salario;
+  END LOOP;
+
+  DBMS_OUTPUT.PUT_LINE('Valor da folha salarial: R$' || folha_salarial);
+END;
+/
+
+-- LOOP PARA CALCULO DO INVENTARIO DE PRODUTOS
+DECLARE
+  idx_produtos NUMBER;
+  valor_inventario NUMBER;
+  CURSOR prodcur IS SELECT nome, estoque, preco_venda FROM Produto;
+  varprod prodcur%ROWTYPE;
+BEGIN
+  OPEN prodcur;
+  valor_inventario := 0;
+  SELECT COUNT(*) INTO idx_produtos FROM Produto;
+  SELECT SUM(preco_venda) INTO valor_inventario FROM Produto;
+  WHILE idx_produtos > 0
+  LOOP
+    FETCH prodcur INTO varprod;
+    DBMS_OUTPUT.PUT_LINE('Produto: ' || varprod.nome);
+    DBMS_OUTPUT.PUT_LINE('Estoque: ' || varprod.estoque);
+    DBMS_OUTPUT.PUT_LINE('Preço de venda: ' || varprod.preco_venda);
+    DBMS_OUTPUT.PUT_LINE('Valor total: ' || varprod.estoque * varprod.preco_venda);
+    DBMS_OUTPUT.PUT_LINE(chr(10)); -- linha em branco
+    idx_produtos := idx_produtos - 1;
+  END LOOP;
+  CLOSE prodcur;
 END;
 /

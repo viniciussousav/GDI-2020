@@ -91,7 +91,7 @@ CREATE TABLE Produto (
     estoque NUMBER,
     fabricante VARCHAR2(50),
 
-    CONSTRAINT produto_pk PRIMARY KEY (id) 
+    CONSTRAINT produto_pk PRIMARY KEY (id)
 );
 
 CREATE TABLE Pedido (
@@ -120,7 +120,7 @@ CREATE TABLE Funcionario (
 CREATE TABLE Dependente (
     id NUMBER, 
     id_funcionario VARCHAR2(11),
-    cpf VARCHAR2(8),
+    cpf VARCHAR2(11),
     nome VARCHAR2(50),
     sexo CHAR(1) CHECK (sexo IN ('M', 'F')),
     data_nascimento DATE,
@@ -133,6 +133,12 @@ CREATE TABLE Setor (
     categoria VARCHAR2(20),
 
     CONSTRAINT setor_pk PRIMARY KEY (categoria)
+);
+
+ALTER TABLE Produto ADD (
+    id_setor VARCHAR2(20),
+
+    CONSTRAINT produto_setor_fk FOREIGN KEY (id_setor) REFERENCES Setor(categoria)
 );
 
 CREATE TABLE Operador (

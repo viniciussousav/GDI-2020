@@ -1,3 +1,5 @@
+CREATE SEQUENCE DEPENDENTES_DEBORA_SEQ;
+
 -- POVOANDO A TABELA PESSOA
 INSERT INTO
   Pessoa (cpf, nome, sexo, data_nascimento)
@@ -325,28 +327,44 @@ WHERE numero = 3;
 
 DELETE FROM Endereco_entrega WHERE complemento = 'APT 105';
 
+-- POVOANDO A TABELA SETOR
+INSERT INTO
+  Setor (categoria)
+VALUES
+  ('Eletroportateis');
+INSERT INTO
+  Setor (categoria)
+VALUES
+  ('Informatica');
+INSERT INTO
+  Setor (categoria)
+VALUES
+  ('Acessórios');
+INSERT INTO
+  Setor (categoria)
+VALUES
+  ('Armazenamentos');
 
 -- POVOANDO A TABELA PRODUTO
 INSERT INTO
-  Produto (id, nome, preco_compra, preco_venda, estoque, fabricante)
+  Produto (id, nome, preco_compra, preco_venda, estoque, fabricante, id_setor)
 VALUES
-  (15494317833, 'Notebook CCIn', 3040, 4099, 214, 'Casa Central de Informatica');
+  (15494317833, 'Notebook CCIn', 3040, 4099, 214, 'Casa Central de Informatica', 'Informatica');
 
 INSERT INTO
-  Produto (id, nome, preco_compra, preco_venda, estoque, fabricante)
+  Produto (id, nome, preco_compra, preco_venda, estoque, fabricante, id_setor)
 VALUES
-  (31487893249, 'Pen-drive', 52.20, 73.99, 68, 'CC Mídias');
+  (31487893249, 'Pen-drive', 52.20, 73.99, 68, 'CC Mídias', 'Armazenamentos');
 
 INSERT INTO
-  Produto (id, nome, preco_compra, preco_venda, estoque, fabricante)
+  Produto (id, nome, preco_compra, preco_venda, estoque, fabricante, id_setor)
 VALUES
-  (61876824893, 'Ventilador', 63, 85.99, 523, 'Só Venta LTDA');
+  (61876824893, 'Ventilador', 63, 85.99, 523, 'Só Venta LTDA', 'Eletroportateis');
 
 INSERT INTO
-  Produto (id, nome, preco_compra, preco_venda, estoque, fabricante)
+  Produto (id, nome, preco_compra, preco_venda, estoque, fabricante, id_setor)
 VALUES
-  (81561349816, 'Relogio', 80.90, 105.99, 121, 'Hora Certa Distribuidora');
-
+  (81561349816, 'Relogio', 80.90, 105.99, 121, 'Hora Certa Distribuidora', 'Acessórios');
 
 -- POVOANDO A TABELA PEDIDO
 INSERT INTO
@@ -416,62 +434,12 @@ VALUES
 INSERT INTO
   Dependente (id, id_funcionario, cpf, nome, sexo, data_nascimento)
 VALUES
-  (110, 12345678910, 32417864, 'Enzo Biden', 'M', DATE '2018-08-06');
+  (DEPENDENTES_DEBORA_SEQ.NEXTVAL, 32145897526, 44779381010, 'Valentina Macedo', 'F', DATE '2018-07-03');
 
 INSERT INTO
   Dependente (id, id_funcionario, cpf, nome, sexo, data_nascimento)
 VALUES
-  (111, 32145897526, 78585412, 'Valentina Macedo', 'F', DATE '2018-07-03');
-
-INSERT INTO
-  Dependente (id, id_funcionario, cpf, nome, sexo, data_nascimento)
-VALUES
-  (112, 98742658412, 85648725, 'Elizabete Augusto', 'F', DATE '2016-01-02');
-
-INSERT INTO
-  Dependente (id, id_funcionario, cpf, nome, sexo, data_nascimento)
-VALUES
-  (113, 48721568497, 98462964, 'Miguel Chagas', 'M', DATE '2020-03-11');
-
-INSERT INTO
-  Dependente (id, id_funcionario, cpf, nome, sexo, data_nascimento)
-VALUES
-  (114, 74865132587, 34578964, 'José Silva', 'M', DATE '2012-12-12');
-
-INSERT INTO
-  Dependente (id, id_funcionario, cpf, nome, sexo, data_nascimento)
-VALUES
-  (115, 98745632158, 94562964, 'Flavio Bolsonaro', 'M', DATE '2010-10-10');
-
-INSERT INTO
-  Dependente (id, id_funcionario, cpf, nome, sexo, data_nascimento)
-VALUES
-  (116, 78765124864, 76548964, 'Cristina Santos', 'F', DATE '2011-11-11');
-
-INSERT INTO
-  Dependente (id, id_funcionario, cpf, nome, sexo, data_nascimento)
-VALUES
-  (117, 88456973254, 34578964, 'Raquel Chagas', 'F', DATE '2021-01-01');
-
-
--- POVOANDO A TABELA SETOR
-INSERT INTO
-  Setor (categoria)
-VALUES
-  ('Eletroportateis');
-INSERT INTO
-  Setor (categoria)
-VALUES
-  ('Informatica');
-INSERT INTO
-  Setor (categoria)
-VALUES
-  ('Acessórios');
-INSERT INTO
-  Setor (categoria)
-VALUES
-  ('Armazenamentos');
-
+  (DEPENDENTES_DEBORA_SEQ.NEXTVAL, 32145897526, 52091412090, 'Enzo Macedo', 'M', DATE '2018-07-03');
 
 -- POVOANDO A TABELA OPERADOR
 INSERT INTO
