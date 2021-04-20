@@ -1,58 +1,59 @@
-DROP TYPE tp_Pessoa;
---DROP TYPE tp_Codigo_postal;
-DROP TYPE tp_Endereco_pessoa;
-DROP TYPE tp_Telefone_pessoa;
-DROP TYPE tp_Cliente;
-DROP TYPE tp_Email_cliente;
-DROP TYPE tp_Endereco_entrega;
-DROP TYPE varray_fones;
-DROP TYPE tp_Produto;
-DROP TYPE tp_Pedido;
-DROP TYPE nt_lista_Pedido;
-DROP TYPE tp_Funcionario;
-DROP TYPE tp_Dependente;
-DROP TYPE tp_Setor;
-DROP TYPE tp_Operador;
-DROP TYPE tp_Gerente;
-DROP TYPE tp_Diploma;
-DROP TYPE nt_lista_diploma;
-DROP TYPE tp_Fornecedor;
-DROP TYPE tp_Endereco_fornecedor;
-DROP TYPE tp_Email_fornecedor;
-DROP TYPE tp_Solicita;
-DROP TYPE tp_Registra;
+-- DROP TYPE tp_Pessoa;
+-- --DROP TYPE tp_Codigo_postal;
+-- DROP TYPE tp_Endereco_pessoa;
+-- DROP TYPE tp_Telefone_pessoa;
+-- DROP TYPE tp_Cliente;
+-- DROP TYPE tp_Email_cliente;
+-- DROP TYPE tp_Endereco_entrega;
+-- DROP TYPE varray_fones;
+-- DROP TYPE tp_Produto;
+-- DROP TYPE tp_Pedido;
+-- DROP TYPE nt_lista_Pedido;
+-- DROP TYPE tp_Funcionario;
+-- DROP TYPE tp_Dependente;
+-- DROP TYPE tp_Setor;
+-- DROP TYPE tp_Operador;
+-- DROP TYPE tp_Gerente;
+-- DROP TYPE tp_Diploma;
+-- DROP TYPE nt_lista_diploma;
+-- DROP TYPE tp_Fornecedor;
+-- DROP TYPE tp_Endereco_fornecedor;
+-- DROP TYPE tp_Email_fornecedor;
+-- DROP TYPE tp_Solicita;
+-- DROP TYPE tp_Registra;
 
 -- CRIAÇÃO DOS TIPOS
 
-CREATE OR REPLACE TYPE tp_Telefone_pessoa AS OBJECT(
+CREATE OR REPLACE TYPE tp_Telefone_pessoa AS OBJECT( --OK
     id_pessoa VARCHAR2(11),
 	telefone VARCHAR2(15)
 );
 /
 
-CREATE OR REPLACE TYPE varray_Telefone AS VARRAY (5) OF tp_Telefone_pessoa;
+CREATE OR REPLACE TYPE varray_Telefone AS VARRAY (5) OF tp_Telefone_pessoa; --OK
 /
 
-CREATE OR REPLACE TYPE tp_Endereco_pessoa AS OBJECT(
+CREATE OR REPLACE TYPE tp_Endereco_pessoa AS OBJECT( --OK
 	id_pessoa VARCHAR2(11),
 	cep NUMBER,
 	numero NUMBER,
     complemento VARCHAR2(50)
 );
 /
-
-CREATE OR REPLACE TYPE tp_Pessoa AS OBJECT (
+--Remocao das restricoes nas criacoes de tipo
+--varray nao eh referenciavel
+CREATE OR REPLACE TYPE tp_Pessoa AS OBJECT ( --OK
     cpf VARCHAR2(11),
-    nome VARCHAR2(30) NOT NULL,
-    sexo CHAR(1) CHECK (sexo IN ('M', 'F')),
-    data_nascimento DATE NOT NULL,
+    nome VARCHAR2(30), 
+    sexo CHAR(1),
+    data_nascimento DATE,
     endereco REF tp_Endereco_pessoa,
-    telefones REF varray_Telefone,
-MEMBER PROCEDURE mostrar (SELF tp_Pessoa)
-)NOT FINAL NOT INSTANTIABLE;
+    telefones varray_Telefone,
+    MEMBER PROCEDURE mostrar (SELF tp_Pessoa)
+) NOT FINAL NOT INSTANTIABLE;
 /
 
-CREATE OR REPLACE TYPE BODY tp_Pessoa AS 
+CREATE OR REPLACE TYPE BODY tp_Pessoa AS --OK
 MEMBER PROCEDURE mostrar (SELF tp_Pessoa) IS
 
 n INTEGER;
@@ -87,13 +88,13 @@ BEGIN
 END;
 /
 
-CREATE OR REPLACE TYPE tp_Pedido AS OBJECT(
+CREATE OR REPLACE TYPE tp_Pedido AS OBJECT( --OK
     id NUMBER, 
     id_cliente VARCHAR2(11),
     cod_produto NUMBER,
     data_pedido DATE,
     valor_total NUMBER,
-    meio_pagamento VARCHAR(50) CHECK (meio_pagamento in ('Cartão de crédito', 'Boleto', 'Cartão de Débito'))
+    meio_pagamento VARCHAR(50) --CHECK (meio_pagamento in ('Cartão de crédito', 'Boleto', 'Cartão de Débito')) isso se faz na criacao de tabelas
 );
 /
 
@@ -137,15 +138,11 @@ CREATE OR REPLACE TYPE tp_Funcionario UNDER tp_Pessoa (
 	salario NUMBER,
 	data_admissao DATE,
     ctps VARCHAR2(8)
-
-);
+) NOT FINAL;
 /
 
 CREATE OR REPLACE TYPE tp_Dependente UNDER tp_Pessoa (
-    cpf VARCHAR2(11),
-    nome VARCHAR2(50),
-    sexo CHAR(1) CHECK (sexo IN ('M', 'F')),
-    data_nascimento DATE
+    titular REF tp_funcionario
 );
 /
 
@@ -156,7 +153,8 @@ CREATE OR REPLACE TYPE tp_Setor AS OBJECT(
 
 CREATE OR REPLACE TYPE tp_Operador UNDER tp_Funcionario (
     categoria_setor VARCHAR2(20),
-    turno VARCHAR2(14) CHECK (turno IN ('Dia', 'Noite'))
+    turno VARCHAR2(14) 
+    --CHECK(sexo IN ('M', 'F'));
 );
 /
 
@@ -187,7 +185,7 @@ CREATE OR REPLACE TYPE tp_Endereco_fornecedor AS OBJECT (
     id_fornecedor VARCHAR2(14),
     numero NUMBER,
     complemento VARCHAR2(50),
-    cep NUMBER NOT NULL
+    cep NUMBER
 );
 /
 
@@ -226,18 +224,57 @@ CREATE TABLE tb_Produtos OF tp_Produto
 
 CREATE TABLE tb_Clientes OF tp_Cliente 
 (cpf PRIMARY KEY) NESTED TABLE lista_pedidos STORE AS lista_pedido_st;
+CHECK(sexo IN ('M', 'F'));
 /
 
 CREATE TABLE tb_Gerentes OF tp_Gerente
 (cpf PRIMARY KEY) NESTED TABLE diplomas STORE AS diplomas_st;
+CHECK(sexo IN ('M', 'F'));
 /
 
 CREATE TABLE tb_Operadores OF tp_Operador
 (cpf PRIMARY KEY);
+CHECK(sexo IN ('M', 'F'));
 /
 
 CREATE TABLE tb_Produto OF tp_Produto 
-(cnpj PRIMARY KEY) NESTED TABLE produtos STORE AS produto_st ;
+(cnpj PRIMARY KEY) NESTED TABLE produtos STORE AS produto_st;
 /
 
--- POVOAMENTO DAS TABELAS
+-- -- POVOAMENTO DAS TABELAS
+
+-- INSERT INTO tb_Clientes VALUES 
+--     86505080066, 
+--     'João Silva', 
+--     'M', 
+--     DATE '1983-01-20', 
+--     tp_Endereco_pessoa(86505080066, 45821630, 7, 'APT 503'),
+--     varray_Telefone(071994021699)
+-- );
+
+-- INSERT INTO tb_Clientes VALUES 
+--     28788212033, 
+--     'José Souza', 
+--     'M', 
+--     DATE '1990-03-28',
+--     tp_Endereco_pessoa(28788212033, 29141860, 3, 'APT 211'),
+--     varray_Telefone(027986158007)
+-- );
+
+-- INSERT INTO tb_Clientes VALUES 
+--     30378752081, 
+--     'Maria Farias', 
+--     'F', 
+--     DATE '1991-05-03',
+--     tp_Endereco_pessoa(30378752081, 63504130, 30, 'APT 702'),
+--     varray_Telefone(088981407529)
+-- );
+
+-- INSERT INTO tb_Clientes VALUES 
+--     90459533070, 
+--     'Ana Leite', 
+--     'F', 
+--     DATE '1988-07-25',
+--     tp_Endereco_pessoa(90459533070, 13900325, 22, 'APT 105'),
+--     varray_Telefone(015991625781)
+-- );
