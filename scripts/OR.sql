@@ -240,6 +240,18 @@ CHECK(sexo IN ('M', 'F'));
 CREATE TABLE tb_Produto OF tp_Produto 
 (cnpj PRIMARY KEY) NESTED TABLE produtos STORE AS produto_st;
 /
+	       
+CREATE TABLE tb_endereco_pessoa OF tp_endereco_pessoa (
+    id_endereco                 PRIMARY KEY
+);
+/
+
+CREATE TABLE tb_funcionario OF tp_funcionario (
+    id_pessoa                   PRIMARY KEY,
+    endereco                    WITH ROWID REFERENCES tb_endereco_pessoa
+    id_supervisor               REFERENCES tb_funcionario (id_pessoa)
+);
+/
 
 -- -- POVOAMENTO DAS TABELAS
 
@@ -278,3 +290,43 @@ CREATE TABLE tb_Produto OF tp_Produto
 --     tp_Endereco_pessoa(90459533070, 13900325, 22, 'APT 105'),
 --     varray_Telefone(015991625781)
 -- );
+	       
+CREATE SEQUENCE ENDERECO_ID_SEQ;
+CREATE SEQUENCE FUNCIONARIO_ID_SEQ;
+
+INSERT INTO tb_endereco_pessoa
+VALUES  (tp_endereco_pessoa (ENDERECO_ID_SEQ.NEXTVAL, 50740370 , '78', 'Casa'));
+			     
+INSERT INTO tb_endereco_pessoa
+VALUES  (tp_endereco_pessoa (ENDERECO_ID_SEQ.NEXTVAL, 78555456 , '555', 'Apartamento'));
+			     
+INSERT INTO tb_endereco_pessoa
+VALUES  (tp_endereco_pessoa (ENDERECO_ID_SEQ.NEXTVAL, 12355578 , '4564', 'Sitio'));
+			     
+INSERT INTO tb_endereco_pessoa
+VALUES  (tp_endereco_pessoa (ENDERECO_ID_SEQ.NEXTVAL, 56425244 , '85', 'Fazenda'));
+			     
+INSERT INTO tb_funcionario
+VALUES  (tp_funcionario (FUNCIONARIO_ID_SEQ.NEXTVAL, '111.222.333-88', 'Matheus', 'Masculino', TO_DATE ('11/11/1997', 'DD/MM/YYYY'),
+        (SELECT REF (E) FROM tb_endereco_pessoa E WHERE E.id_endereco = 1),
+        varray_telefone (tp_telefone ('9 0193-0039'), tp_telefone ('9 4559-6601'))));
+
+INSERT INTO tb_funcionario
+VALUES  (tp_funcionario (FUNCIONARIO_ID_SEQ.NEXTVAL, '777.888.999-00', 'Lucas', 'Masculino', TO_DATE ('29/07/1995', 'DD/MM/YYYY'),
+        (SELECT REF (E) FROM tb_endereco_pessoa E WHERE E.id_endereco = 2),
+        varray_telefone (tp_telefone ('9 3455-8903'), tp_telefone ('9 5290-5084'))));
+
+INSERT INTO tb_funcionario
+VALUES  (tp_funcionario (FUNCIONARIO_ID_SEQ.NEXTVAL, '333.666.222-77', 'Pedro', 'Masculino', TO_DATE ('16/10/1995', 'DD/MM/YYYY'),
+        (SELECT REF (E) FROM tb_endereco_pessoa E WHERE E.id_endereco = 1),
+        varray_telefone (tp_telefone ('9 2110-3341'), tp_telefone ('9 2390-5734'))));	 
+								   
+-- SELECTS
+	       
+SELECT F.id_pessoa, F.nome, T.telefone FROM tb_funcionario F, TABLE(F.varray_telefone) T;
+	       
+SELECT  F.id_pessoa, F.nome, F.cpf, F.sexo, F.data_nascimento,
+        DEREF(F.endereco).numero AS NUMERO, DEREF(F.endereco).cep AS CEP, DEREF(F.endereco).complemento AS COMPLEMENTO,
+        FROM tb_fruncionario F
+        ORDER BY F.id_pessoa ASC;
+
