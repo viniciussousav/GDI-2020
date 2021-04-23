@@ -64,30 +64,30 @@ DECLARE
 	i INTEGER;
 BEGIN
 	--INFORMAÇÕES
-	DBMS_OUTPUT.put_line(‘NOME: ’ || nome);
-  DBMS_OUTPUT.put_line(‘CPF: ’ || cpf);
-  DBMS_OUTPUT.put_line(‘SEXO: ’ || sexo);
-  DBMS_OUTPUT.put_line(‘DATA DE NASCIMENTO: ’ || TO_CHAR(data_nasci));
+	DBMS_OUTPUT.put_line('NOME: ' || nome);
+  DBMS_OUTPUT.put_line('CPF: ' || cpf);
+  DBMS_OUTPUT.put_line('SEXO: ' || sexo);
+  DBMS_OUTPUT.put_line('DATA DE NASCIMENTO: ' || TO_CHAR(data_nasci));
 
   n:=telefones.COUNT;
-  DBMS_OUTPUT.put_line(‘TELEFONES: ’);
+  DBMS_OUTPUT.put_line('TELEFONES: ');
   IF n > 0 THEN
 		FOR i in 1..n LOOP
 			DBMS_OUTPUT.put_line(i || telefones(i).telefone);
 		END LOOP;
 	ELSE
-		DBMS_OUTPUT.put_line(‘Não há telefones registrados.’);
+		DBMS_OUTPUT.put_line('Não há telefones registrados.');
 	END IF;
 
 	--ENDERECO
-  DBMS_OUTPUT.put_line(‘ID: ’ || Endereco_pessoa.id_pessoa);
-	DBMS_OUTPUT.put_line(‘CEP: ’ || Endereco_pesso.cep);
-	DBMS_OUTPUT.put_line(‘NUMERO: ’ || Endereco_pesso.numero);
-	DBMS_OUTPUT.put_line(‘COMPLEMENTO: ’ || Endereco_pesso.complemento);
+  DBMS_OUTPUT.put_line('ID: ' || Endereco_pessoa.id_pessoa);
+	DBMS_OUTPUT.put_line('CEP: ' || Endereco_pesso.cep);
+	DBMS_OUTPUT.put_line('NUMERO: ' || Endereco_pesso.numero);
+	DBMS_OUTPUT.put_line('COMPLEMENTO: ' || Endereco_pesso.complemento);
 
     --TELEFONE
-	DBMS_OUTPUT.put_line(‘ID: ’ || Telefone_pessoa.id_pessoa);
-	DBMS_OUTPUT.put_line(‘TELEFONE: ’ || Telefone_pessoa.telefone);
+	DBMS_OUTPUT.put_line('ID: ' || Telefone_pessoa.id_pessoa);
+	DBMS_OUTPUT.put_line('TELEFONE: ' || Telefone_pessoa.telefone);
 	END;
 
 	ORDER MEMBER FUNCTION ordenar_por_idade (p tp_Pessoa) RETURN NUMBER IS
@@ -184,26 +184,26 @@ OVERRIDE MEMBER PROCEDURE mostrar IS
 
 BEGIN
 	--INFORMAÇÕES PESSOAIS
-	DBMS_OUTPUT.put_line(‘NOME: ’ || nome);
-  DBMS_OUTPUT.put_line(‘CPF: ’ || cpf);
-  DBMS_OUTPUT.put_line(‘SEXO: ’ || sexo);
-  DBMS_OUTPUT.put_line(‘DATA DE NASCIMENTO: ’ || TO_CHAR(data_nasci));
+	DBMS_OUTPUT.put_line('NOME: ' || nome);
+  DBMS_OUTPUT.put_line('CPF: ' || cpf);
+  DBMS_OUTPUT.put_line('SEXO: ' || sexo);
+  DBMS_OUTPUT.put_line('DATA DE NASCIMENTO: ' || TO_CHAR(data_nasci));
 
 
 	--ENDERECO
-  DBMS_OUTPUT.put_line(‘ID: ’ || Endereco_pessoa.id_pessoa);
-	DBMS_OUTPUT.put_line(‘CEP: ’ || Endereco_pesso.cep);
-	DBMS_OUTPUT.put_line(‘NUMERO: ’ || Endereco_pesso.numero);
-	DBMS_OUTPUT.put_line(‘COMPLEMENTO: ’ || Endereco_pesso.complemento);
+  DBMS_OUTPUT.put_line('ID: ' || Endereco_pessoa.id_pessoa);
+	DBMS_OUTPUT.put_line('CEP: ' || Endereco_pesso.cep);
+	DBMS_OUTPUT.put_line('NUMERO: ' || Endereco_pesso.numero);
+	DBMS_OUTPUT.put_line('COMPLEMENTO: ' || Endereco_pesso.complemento);
 
     --TELEFONE
-	DBMS_OUTPUT.put_line(‘ID: ’ || Telefone_pessoa.id_pessoa);
-	DBMS_OUTPUT.put_line(‘TELEFONE: ’ || Telefone_pessoa.telefone);
+	DBMS_OUTPUT.put_line('ID: ' || Telefone_pessoa.id_pessoa);
+	DBMS_OUTPUT.put_line('TELEFONE: ' || Telefone_pessoa.telefone);
 
 	--INFORMACOES TRABALHISTAS
-	DBMS_OUTPUT.put_line(‘SALARIO: ’ || salario);
-	DBMS_OUTPUT.put_line(‘DATA DE ADMISSAO: ’ || data_admissao);
-	DBMS_OUTPUT.put_line(‘CTPS: ’ || ctps);
+	DBMS_OUTPUT.put_line('SALARIO: ' || salario);
+	DBMS_OUTPUT.put_line('DATA DE ADMISSAO: ' || data_admissao);
+	DBMS_OUTPUT.put_line('CTPS: ' || ctps);
 	END;
 END;
 /
