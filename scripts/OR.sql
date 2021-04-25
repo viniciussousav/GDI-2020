@@ -1,26 +1,26 @@
--- DROP TYPE tp_Pessoa;
--- --DROP TYPE tp_Codigo_postal;
--- DROP TYPE tp_Endereco;
--- DROP TYPE tp_Telefone;
--- DROP TYPE tp_Cliente;
--- DROP TYPE tp_Email_cliente;
--- DROP TYPE tp_Endereco_entrega;
--- DROP TYPE varray_fones;
--- DROP TYPE tp_Produto;
--- DROP TYPE tp_Pedido;
--- DROP TYPE nt_lista_Pedido;
--- DROP TYPE tp_Funcionario;
--- DROP TYPE tp_Dependente;
--- DROP TYPE tp_Setor;
--- DROP TYPE tp_Operador;
--- DROP TYPE tp_Gerente;
--- DROP TYPE tp_Diploma;
--- DROP TYPE nt_lista_diploma;
--- DROP TYPE tp_Fornecedor;
--- DROP TYPE tp_Endereco_fornecedor;
--- DROP TYPE tp_Email_fornecedor;
--- DROP TYPE tp_Solicita;
--- DROP TYPE tp_Registra;
+DROP TYPE tp_Pessoa;
+DROP TYPE tp_Codigo_postal;
+DROP TYPE tp_Endereco;
+DROP TYPE tp_Telefone;
+DROP TYPE tp_Cliente;
+DROP TYPE tp_Email_cliente;
+DROP TYPE tp_Endereco_entrega;
+DROP TYPE varray_fones;
+DROP TYPE tp_Produto;
+DROP TYPE tp_Pedido;
+DROP TYPE nt_lista_Pedido;
+DROP TYPE tp_Funcionario;
+DROP TYPE tp_Dependente;
+DROP TYPE tp_Setor;
+DROP TYPE tp_Operador;
+DROP TYPE tp_Gerente;
+DROP TYPE tp_Diploma;
+DROP TYPE nt_lista_diploma;
+DROP TYPE tp_Fornecedor;
+DROP TYPE tp_Endereco_fornecedor;
+DROP TYPE tp_Email_fornecedor;
+DROP TYPE tp_Solicita;
+DROP TYPE tp_Registra;
 
 -- CRIAÇÃO DOS TIPOS
 
@@ -35,13 +35,18 @@ CREATE OR REPLACE TYPE varray_Telefone AS VARRAY (5) OF tp_Telefone; --OK
 --Remocao das restricoes nas criacoes de tipo
 --varray nao eh referenciavel
 CREATE OR REPLACE TYPE tp_Pessoa AS OBJECT ( --OK
+    id_pessoa INTEGER,
     cpf VARCHAR2(11),
     nome VARCHAR2(30), 
     sexo CHAR(1),
     data_nascimento DATE,
     telefones varray_Telefone,
     MEMBER PROCEDURE mostrar,
-		ORDER MEMBER FUNCTION ordenar_por_idade (p tp_Pessoa) RETURN NUMBER
+		ORDER MEMBER FUNCTION ordenar_por_idade (p tp_Pessoa) RETURN NUMBER,
+    CONSTRUCTOR FUNCTION tp_pessoa
+        (f_id_pessoa NUMBER, f_cpf VARCHAR2, f_nome VARCHAR2, f_sexo VARCHAR2, f_data_nascimento DATE, f_telefone varray_telefone)
+        RETURN SELF AS RESULT,
+    FINAL MEMBER FUNCTION get_nome RETURN VARCHAR2
 ) NOT FINAL NOT INSTANTIABLE;
 /
 
@@ -64,6 +69,7 @@ DECLARE
 	i INTEGER;
 BEGIN
 	--INFORMAÇÕES
+  DBMS_OUTPUT.put_line('ID: ' || id_pessoa);
 	DBMS_OUTPUT.put_line('NOME: ' || nome);
   DBMS_OUTPUT.put_line('CPF: ' || cpf);
   DBMS_OUTPUT.put_line('SEXO: ' || sexo);
@@ -99,7 +105,23 @@ BEGIN
 		END IF;
 	END;
 
+  CONSTRUCTOR FUNCTION tp_pessoa
+  (f_id_pessoa NUMBER, f_cpf VARCHAR2, f_nome VARCHAR2, f_sexo VARCHAR2, f_data_nascimento DATE, f_telefone varray_telefone)
+  RETURN SELF AS RESULT IS
+    BEGIN
+        SELF.id_pessoa          := f_id_pessoa;
+        SELF.cpf                := f_cpf;
+        SELF.nome               := f_nome;
+        SELF.sexo               := f_sexo;
+        SELF.data_nascimento    := f_data_nascimento;
+        SELF.telefone           := f_telefone;
+    END;
 
+  FINAL MEMBER FUNCTION get_nome RETURN VARCHAR2 IS
+  BEGIN
+    RETURN nome;
+  END;
+  
 END;
 /
 
@@ -120,9 +142,7 @@ CREATE OR REPLACE TYPE tp_Cliente UNDER tp_Pessoa (
 );
 /
 
-ALTER TYPE tp_Pedido ADD ATTRIBUTE (
-	cliente REF tp_Cliente
-);
+ALTER TYPE tp_Pedido ADD ATTRIBUTE (cliente REF tp_Cliente) CASCADE;
 
 CREATE OR REPLACE TYPE tp_Email_cliente AS OBJECT(
 	email VARCHAR2(50)
@@ -149,9 +169,7 @@ CREATE OR REPLACE TYPE tp_Produto AS OBJECT(
 );
 /
 
-ALTER TYPE tp_Pedido ADD ATTRIBUTE (
-  cod_produto REF tp_Produto
-);
+ALTER TYPE tp_Pedido ADD ATTRIBUTE (cod_produto REF tp_Produto) CASCADE;
 
 CREATE OR REPLACE TYPE BODY tp_Produto AS 
    MEMBER FUNCTION balanco return NUMBER IS
@@ -240,7 +258,7 @@ CREATE OR REPLACE TYPE tp_Gerente UNDER tp_Funcionario (
 /
 
 CREATE OR REPLACE TYPE tp_Fornecedor AS OBJECT (
-	cnpj VARCHAR2(14),
+	  cnpj VARCHAR2(14),
     razao_social VARCHAR(50),
     inscricao_estadual VARCHAR2(12),
     telefone NUMBER,
@@ -279,10 +297,12 @@ CREATE OR REPLACE TYPE tp_Registra AS OBJECT (
 );
 /
 
+-- DAQUI PRA CIMA, TUDO OK!!!
+
 -- CRIAÇÃO DAS TABELAS
 
 CREATE TABLE tb_Enderecos_pessoa OF tp_Endereco 
-(id_pessoa PRIMARY KEY);
+(cep PRIMARY KEY);
 /
 
 CREATE TABLE tb_Produtos OF tp_Produto 
@@ -291,54 +311,57 @@ CREATE TABLE tb_Produtos OF tp_Produto
 
 CREATE TABLE tb_Clientes OF tp_Cliente 
 (cpf PRIMARY KEY) NESTED TABLE lista_pedidos STORE AS lista_pedido_st;
-CHECK(sexo IN ('M', 'F'));
+-- CHECK(sexo IN ('M', 'F')); -- DÁ ERRO (INVALID STATEMENT)
 /
 
 CREATE TABLE tb_Gerentes OF tp_Gerente
 (cpf PRIMARY KEY) NESTED TABLE diplomas STORE AS diplomas_st;
-CHECK(sexo IN ('M', 'F'));
+-- CHECK(sexo IN ('M', 'F')); -- DÁ ERRO (INVALID STATEMENT)
 /
 
 CREATE TABLE tb_Operadores OF tp_Operador
 (cpf PRIMARY KEY);
-CHECK(sexo IN ('M', 'F'));
+-- CHECK(sexo IN ('M', 'F')); -- DÁ ERRO (INVALID STATEMENT)
 /
 
+-- NESTED TABLE produtos STORE AS produto_st
 CREATE TABLE tb_Produto OF tp_Produto 
-(cnpj PRIMARY KEY) NESTED TABLE produtos STORE AS produto_st;
+(id PRIMARY KEY) nt_p;
 /
 	       
-CREATE TABLE tb_endereco_pessoa OF tp_endereco (
-    id_endereco                 PRIMARY KEY
+CREATE TABLE tb_Endereco_pessoa OF tp_Endereco (
+    cep PRIMARY KEY
 );
 /
 
-CREATE TABLE tb_funcionario OF tp_funcionario (
+-- ATÉ AQUI, NENHUM ERRO DE COMPILAÇÃO, MAS FALTAM CONSERTAR AS TABELAS QUE SÃO CRIADAS (OU CHECAR SE PODEM SER ASSIM)
+
+-- TROCAR A PK DE PESSOA PARA SER ID_PESSOA, E CPF PASSAR A SER APENAS UM ATRIBUTO
+CREATE TABLE tb_Funcionario OF tp_Funcionario (
     id_pessoa                   PRIMARY KEY,
-    endereco                    WITH ROWID REFERENCES tb_endereco_pessoa
-    id_supervisor               REFERENCES tb_funcionario (id_pessoa)
+    endereco                    WITH ROWID REFERENCES tb_Endereco_pessoa
 );
 /
 
 -- -- POVOAMENTO DAS TABELAS
 
--- INSERT INTO tb_Clientes VALUES 
---     86505080066, 
---     'João Silva', 
---     'M', 
---     DATE '1983-01-20', 
---     tp_Endereco(86505080066, 45821630, 7, 'APT 503'),
---     varray_Telefone(071994021699)
--- );
+INSERT INTO tb_Clientes VALUES 
+    86505080066, 
+    'João Silva', 
+    'M', 
+    DATE '1983-01-20', 
+    tp_Endereco(86505080066, 45821630, 7, 'APT 503'),
+    varray_Telefone(071994021699)
+);
 
--- INSERT INTO tb_Clientes VALUES 
---     28788212033, 
---     'José Souza', 
---     'M', 
---     DATE '1990-03-28',
---     tp_Endereco(28788212033, 29141860, 3, 'APT 211'),
---     varray_Telefone(027986158007)
--- );
+INSERT INTO tb_Clientes VALUES 
+    28788212033, 
+    'José Souza', 
+    'M', 
+    DATE '1990-03-28',
+    tp_Endereco(28788212033, 29141860, 3, 'APT 211'),
+    varray_Telefone(027986158007)
+);
 
 -- INSERT INTO tb_Clientes VALUES 
 --     30378752081, 
@@ -361,31 +384,31 @@ CREATE TABLE tb_funcionario OF tp_funcionario (
 CREATE SEQUENCE ENDERECO_ID_SEQ;
 CREATE SEQUENCE FUNCIONARIO_ID_SEQ;
 
-INSERT INTO tb_endereco_pessoa
+INSERT INTO tb_Endereco_pessoa
 VALUES  (tp_endereco (ENDERECO_ID_SEQ.NEXTVAL, 50740370 , '78', 'Casa'));
 			     
-INSERT INTO tb_endereco_pessoa
+INSERT INTO tb_Endereco_pessoa
 VALUES  (tp_endereco (ENDERECO_ID_SEQ.NEXTVAL, 78555456 , '555', 'Apartamento'));
 			     
-INSERT INTO tb_endereco_pessoa
+INSERT INTO tb_Endereco_pessoa
 VALUES  (tp_endereco (ENDERECO_ID_SEQ.NEXTVAL, 12355578 , '4564', 'Sitio'));
 			     
-INSERT INTO tb_endereco_pessoa
+INSERT INTO tb_Endereco_pessoa
 VALUES  (tp_endereco (ENDERECO_ID_SEQ.NEXTVAL, 56425244 , '85', 'Fazenda'));
 			     
 INSERT INTO tb_funcionario
 VALUES  (tp_funcionario (FUNCIONARIO_ID_SEQ.NEXTVAL, '111.222.333-88', 'Matheus', 'Masculino', TO_DATE ('11/11/1997', 'DD/MM/YYYY'),
-        (SELECT REF (E) FROM tb_endereco_pessoa E WHERE E.id_endereco = 1),
+        (SELECT REF (E) FROM tb_Endereco_pessoa E WHERE E.id_endereco = 1),
         varray_telefone (tp_telefone ('9 0193-0039'), tp_telefone ('9 4559-6601'))));
 
 INSERT INTO tb_funcionario
 VALUES  (tp_funcionario (FUNCIONARIO_ID_SEQ.NEXTVAL, '777.888.999-00', 'Lucas', 'Masculino', TO_DATE ('29/07/1995', 'DD/MM/YYYY'),
-        (SELECT REF (E) FROM tb_endereco_pessoa E WHERE E.id_endereco = 2),
+        (SELECT REF (E) FROM tb_Endereco_pessoa E WHERE E.id_endereco = 2),
         varray_telefone (tp_telefone ('9 3455-8903'), tp_telefone ('9 5290-5084'))));
 
 INSERT INTO tb_funcionario
 VALUES  (tp_funcionario (FUNCIONARIO_ID_SEQ.NEXTVAL, '333.666.222-77', 'Pedro', 'Masculino', TO_DATE ('16/10/1995', 'DD/MM/YYYY'),
-        (SELECT REF (E) FROM tb_endereco_pessoa E WHERE E.id_endereco = 1),
+        (SELECT REF (E) FROM tb_Endereco_pessoa E WHERE E.id_endereco = 1),
         varray_telefone (tp_telefone ('9 2110-3341'), tp_telefone ('9 2390-5734'))));	 
 								   
 -- SELECTS
@@ -397,3 +420,5 @@ SELECT  F.id_pessoa, F.nome, F.cpf, F.sexo, F.data_nascimento,
         FROM tb_fruncionario F
         ORDER BY F.id_pessoa ASC;
 
+-- FALTA TESTAR SE FUNCIONA ESSE VALUE
+-- SELECT  p.preco_compra FROM tb_produto p ORDER BY VALUE(p);
