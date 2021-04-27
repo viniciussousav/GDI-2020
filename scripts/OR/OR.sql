@@ -343,7 +343,7 @@ CREATE TABLE tb_Funcionario OF tp_Funcionario (
 );
 /
 
--- -- POVOAMENTO DAS TABELAS
+-- POVOAMENTO DAS TABELAS
 
 INSERT INTO tb_Clientes VALUES 
     86505080066, 
