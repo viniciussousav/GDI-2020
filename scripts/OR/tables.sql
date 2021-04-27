@@ -35,5 +35,5 @@ CREATE TABLE tb_Registra OF tp_Registra
 /
 
 CREATE TABLE tb_Pedido OF tp_Pedido
-( PRIMARY KEY (pedido, data_pedido) );
+( PRIMARY KEY (pedido, data_pedido), produto WITH ROWID REFERENCES tb_Produto);
 /
