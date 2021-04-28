@@ -232,22 +232,22 @@ db.exames.find().pretty();
 
 // update os pacientes e os funcionarios de acordo com os exames que eles estão alocados
 db.pacientes.update(
-    { id: 1 },
+    { "_id": 1 },
     { $push: { historico_exames: 1 } }
 );
 
 db.pacientes.update(
-    { id: 1 },
+    { "_id": 1 },
     { $push: { historico_exames: 2 } }
 );
 
 db.pacientes.update(
-    { id: 2 },
+    { "_id": 2 },
     { $push: { historico_exames: 3 } }
 );
 
 db.pacientes.update(
-    { id: 2 },
+    { "_id": 2 },
     { $push: { historico_exames: 4 } }
 );
 
@@ -311,7 +311,7 @@ while (aggregate_cursor_1.hasNext()) {
 }
 
 //utilizando o aggregate para classificar a média dos salários dos funcionários de acordo com a especialidade
-printjson("Listando o salário de cada especialização de acordo com a ordem da média dos salários")
+printjson("Listando o salário de cada especialização de acordo com a ordem")
 aggregate_cursor_2 = db.funcionarios.aggregate([
     {
         $group: {
@@ -337,7 +337,161 @@ while (aggregate_cursor_2.hasNext()) {
     print(tojson(aggregate_cursor_2.next()));
 }
 
+// retornando agendamentos que tem o tipo o complemento na localização
+db.agendamentos.find(
+    { "localizacao.complemento":
+        { $exists: true }
+    }
+);
+
+// retornando pacientes que tem 2 exames no historico
+db.pacientes.find(
+    { "historico_exames":
+        { $size: 2 }
+    }
+);
+
+// obtendo o maior salário de todos os funcionários
+db.funcionarios.aggregate(
+    [
+        { $group: 
+            { "_id": null,
+              count:
+                    { $max: '$salario' }
+            }
+        }
+    ]
+);
+
+// obtendo os três funcionarios mais velhos
+db.funcionarios.aggregate(
+    [
+        { $sort :
+            { "idade": -1 }
+        },
+        { $limit : 3 }
+    ]
+);
+
+// obtendo funcionarios que tem o salário maior que a idade (todos)
+db.funcionarios.find(
+    { $where: "this.salario > this.idade" }
+);
+
+// mapreduce Agrupando os salarios por sobrenome, e somando caso tenha mais de um salario(não temos isso, n consegui pensar em outra coisa)
+let mapFunction4 = function() {
+    emit(this.sobrenome, this.salario);
+};
+
+let reduceFunction = function(keyCustId, valuesSal) {
+    return Array.sum(valuesSal);
+};
+
+db.funcionarios.mapReduce(
+    mapFunction4,
+    reduceFunction,
+    { out: "Map_Reduce" }
+);
+db.Map_Reduce.find().sort({_id:1})
+
+// function Retornando a funcionária que tem o primeiro nome Maraa
+db.funcionarios.find (
+    { $where: function ()
+        {
+            return ((this.primeiro_nome) == "Marta")
+        }
+    }
+);
+
+// retorna todas as funcionarias
+db.funcionarios.find(
+    { "sexo":
+        { $all:
+            ["F"]
+        }
+    }
+);
 
 
+// inserindo o complemento em um agendamento que não possui
+db.agendamentos.update(
+    { "_id": 3 },
+    {
+        $set: {
+            "localizacao.complemento": "CASA"
+        }
+    },
+    { upsert: true }
+);
 
+// criando index em sobrenome para fazer busca em text
+db.funcionarios.createIndex(
+    { "sobrenome": "text" }
+);
+db.funcionarios.find(
+    { $text:
+        { $search: "Moraes" }
+    }
+);
+
+// criando filter que vai mostrar o historico de exames que possuir um numero 1 nele, se não possuir vai mostrar o array vazio
+db.pacientes.aggregate([
+    {
+        $project: {
+            "primeiro_nome":"$primeiro_nome",
+            "historico_exames": {
+                $filter: {
+                    input: "$historico_exames",
+                    as: "historico_exames",
+                    cond: {$eq: ["$$historico_exames", 1] }
+                }
+            }
+        }
+    }
+]).pretty();
+
+// salvado zagallo como funcionário
+db.funcionarios.save(
+    {
+        _id: 13,
+        primeiro_nome: "Lobo",
+        sobrenome: "Zagallo",
+        idade: 89,
+        sexo: "M",
+        salario: 14000.00,
+        especializacao: "cirúrgico",
+        data_admissao: new Date(1970, 4, 10),
+        exame_ids: []
+    }
+)
+
+// renomeei funcionarios e dps mudei de volta
+db.funcionarios.renameCollection("trabalhadores");
+db.trabalhadores.renameCollection("funcionarios");
+
+// achando zagallo
+db.funcionarios.findOne (
+    { "primeiro_nome": "Lobo" }
+);
+
+//adicionando mais um exame ao histórico
+db.pacientes.update (
+    { "primeiro_nome": "Luan"},
+    { $addToSet: 
+        {"historico_exames": 8}
+    }
+);
+
+// associando os exames agendados aos seus pacientes
+db.agendamentos.aggregate([
+    {
+      $lookup:
+        {
+          from: "pacientes",
+          localField: "paciente_id",
+          foreignField: "_id",
+          as: "examinado"
+        }
+   }
+ ])
 
