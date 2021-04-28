@@ -311,7 +311,7 @@ while (aggregate_cursor_1.hasNext()) {
 }
 
 //utilizando o aggregate para classificar a média dos salários dos funcionários de acordo com a especialidade
-printjson("Listando o salário de cada especialização de acordo com a ordem")
+printjson("Listando o salário de cada especialização de acordo com a ordem da média dos salários")
 aggregate_cursor_2 = db.funcionarios.aggregate([
     {
         $group: {
