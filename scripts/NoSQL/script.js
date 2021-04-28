@@ -288,24 +288,23 @@ printjson("A quantidade de exames cadastrados é: " + cursor_exames_count);
 
 //utilizando o aggregate para calcular a total dos salários por sexo
 printjson("Calcular a quantidade dos salários por cada sexo:")
-aggregate_cursor_1 = db.funcionarios.aggregate(
-    [
-        {
-            $match: {
-                idade: {
-                    $gte: 21
-                }
-            }
-        },
-        {
-            $group:
-            {
-                _id: "$sexo",
-                total: { $sum: "$salario" },
-
+aggregate_cursor_1 = db.funcionarios.aggregate([
+    {
+        $match: {
+            idade: {
+                $gte: 21
             }
         }
-    ]);
+    },
+    {
+        $group:
+        {
+            _id: "$sexo",
+            total: { $sum: "$salario" },
+
+        }
+    }
+]);
 
 while (aggregate_cursor_1.hasNext()) {
     print(tojson(aggregate_cursor_1.next()));
@@ -314,7 +313,6 @@ while (aggregate_cursor_1.hasNext()) {
 //utilizando o aggregate para classificar a média dos salários dos funcionários de acordo com a especialidade
 printjson("Listando o salário de cada especialização de acordo com a ordem")
 aggregate_cursor_2 = db.funcionarios.aggregate([
-    
     {
         $group: {
             _id: "$especializacao",
