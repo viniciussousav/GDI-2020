@@ -1,17 +1,22 @@
 /*
 
-    Para rodar esse script tem que estar com um servidor mongodb
-    instalado e executando na máquina através do mongodb shell,
-    após isso utilizasse a seguinte função no shell:
+    Para rodar esse script, é necessário ter um servidor MongoDB
+    instalado e executando na máquina através do MongoDB Shell.
+    Após isso, utiliza-se a seguinte função no shell:
 
     load("<local_do_arquivo>/script.js")
 
-    Os comandos para manipular o db e suas collection no shell são 
-    identicos a um arquivo js, inclusive a documentação assim orienta
-    para executar scripts no mongodb shell.
+    Os comandos para manipular o BD e suas Collections no shell são 
+    idênticos a um arquivo JS -- inclusive a documentação assim orienta
+    para executar scripts no MongoDB Shell.
+
+
 */
 
-
+/* 
+    Para criação do BD ou mudança para o mesmo, inserir no shell:
+    use analisesClinicasBD;
+*/
 
 db.pacientes.remove({});
 db.funcionarios.remove({});
@@ -272,7 +277,7 @@ db.funcionarios.update(
     { $push: { historico_exames: 4 } }
 );
 
-//utilizando o size
+// utilizando o count
 
 cursor_pacientes_count = db.pacientes.find().count();
 printjson("A quantidade de pacientes cadastrados é: " + cursor_pacientes_count);
@@ -286,7 +291,7 @@ printjson("A quantidade de agendamentos cadastrados é: " + cursor_agendamentos_
 cursor_exames_count = db.exames.find().count();
 printjson("A quantidade de exames cadastrados é: " + cursor_exames_count);
 
-//utilizando o aggregate para calcular a total dos salários por sexo
+// utilizando o aggregate para calcular a total dos salários por sexo
 printjson("Calcular a quantidade dos salários por cada sexo:")
 aggregate_cursor_1 = db.funcionarios.aggregate([
     {
@@ -310,7 +315,7 @@ while (aggregate_cursor_1.hasNext()) {
     print(tojson(aggregate_cursor_1.next()));
 }
 
-//utilizando o aggregate para classificar a média dos salários dos funcionários de acordo com a especialidade
+// utilizando o aggregate para classificar a média dos salários dos funcionários de acordo com a especialidade
 printjson("Listando o salário de cada especialização de acordo com a ordem")
 aggregate_cursor_2 = db.funcionarios.aggregate([
     {
@@ -378,7 +383,7 @@ db.funcionarios.find(
     { $where: "this.salario > this.idade" }
 );
 
-// mapreduce Agrupando os salarios por sobrenome, e somando caso tenha mais de um salario(não temos isso, n consegui pensar em outra coisa)
+// mapreduce agrupando os salarios por sobrenome, e somando caso tenha mais de um salario
 let mapFunction4 = function() {
     emit(this.sobrenome, this.salario);
 };
@@ -394,7 +399,7 @@ db.funcionarios.mapReduce(
 );
 db.Map_Reduce.find().sort({_id:1})
 
-// function Retornando a funcionária que tem o primeiro nome Maraa
+// function Retornando a funcionária que tem o primeiro nome Marta
 db.funcionarios.find (
     { $where: function ()
         {
@@ -463,9 +468,9 @@ db.funcionarios.save(
         data_admissao: new Date(1970, 4, 10),
         exame_ids: []
     }
-)
+);
 
-// renomeei funcionarios e dps mudei de volta
+// renomeei funcionarios e depois mudei de volta
 db.funcionarios.renameCollection("trabalhadores");
 db.trabalhadores.renameCollection("funcionarios");
 
@@ -474,7 +479,7 @@ db.funcionarios.findOne (
     { "primeiro_nome": "Lobo" }
 );
 
-//adicionando mais um exame ao histórico
+// adicionando mais um exame ao histórico
 db.pacientes.update (
     { "primeiro_nome": "Luan"},
     { $addToSet: 
@@ -494,4 +499,3 @@ db.agendamentos.aggregate([
         }
    }
  ])
-
